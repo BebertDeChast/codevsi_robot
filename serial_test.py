@@ -1,12 +1,32 @@
 import serial
 import time
-arduino = serial.Serial(port='COM4', baudrate=115200, timeout=.1)
-def write_read(x):
+arduino = serial.Serial(port='COM6', baudrate=9600, timeout=10)
+time.sleep(1)  # wait for the serial connection to initialize
+
+
+def write(x): # write a string to the arduino
     arduino.write(bytes(x, 'utf-8'))
-    time.sleep(0.05)
-    data = arduino.readline()
-    return data
-while True:
-    num = input("Enter a number: ") # Taking input from user
-    value = write_read(num)
-    print(value) # printing the value
+
+
+def read(): # read a string from the arduino
+    data = arduino.readline()[:-1]
+    if data:
+        return data
+
+
+def main():
+    # make a loop  to read the data from the arduino
+    while True:
+        
+        send = input("Enter a value: ")
+        if send == "exit": # exit the loop
+            break
+        t1 = time.time()
+        write(send)
+        print("Sent: " + send)
+        data = read()
+        print("Received: " + str(data))
+        t2 = time.time()
+        print("Time: " + str(t2 - t1) +"\n")
+
+main()
