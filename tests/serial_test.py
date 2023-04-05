@@ -9,7 +9,7 @@ def write(x): # write a string to the arduino
 
 
 def read(): # read a string from the arduino
-    data = arduino.readline()[:-1]
+    data = arduino.read()
     if data:
         return data
 
