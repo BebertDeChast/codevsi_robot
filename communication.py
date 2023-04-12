@@ -5,14 +5,14 @@ com_port = 'COM6'
 debit = 9600
 
 
-def write(x):  # write a string to the arduino
-    arduino.write(bytes(x, 'utf-8'))
+def write(x, target):  # write a string to the arduino
+    target.write(bytes(x, 'utf-8'))
 
 
-def read():  # read a string from the arduino
+def read(target):  # read a string from the arduino
     """Read a string from the arduino and return it
     return None if no data is available"""
-    data = arduino.read()
+    data = target.read()
     if data:
         return data.decode("utf-8")
 
@@ -30,18 +30,19 @@ def send_instruction(d_instrustion: dict, g_instrustion: dict, mode: chr = 'r'):
     write(compile_data(d_instrustion, g_instrustion, mode))
 
 
-arduino = serial.Serial(port=com_port, baudrate=debit, timeout=10)
-time.sleep(1)  # wait for the serial connection to initialize
-print("Connecting to: " + arduino.portstr)
+def main():
+    arduino = serial.Serial(port=com_port, baudrate=debit, timeout=10)
+    time.sleep(1)  # wait for the serial connection to initialize
+    print("Connecting to: " + arduino.portstr)
 
-# test if the arduino is ready
-t1 = time.time()
-write("t")
-test = read()
-t2 = time.time()
-print("Delay: " + str(t2 - t1))
-if test != "k":
-    print("Arduino is not ready")
-    exit()
-else:
-    print("Arduino is ready")
+    # test if the arduino is ready
+    t1 = time.time()
+    write("t", arduino)
+    test = read(arduino)
+    t2 = time.time()
+    print("Delay: " + str(t2 - t1))
+    if test != "k":
+        print("Arduino is not ready")
+        exit()
+    else:
+        print("Arduino is ready")
