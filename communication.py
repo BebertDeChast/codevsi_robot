@@ -31,7 +31,12 @@ def send_instruction(d_instrustion: dict, g_instrustion: dict, mode: chr = 'r'):
 
 
 def main():
-    arduino = serial.Serial(port=com_port, baudrate=debit, timeout=10)
+    try: 
+        arduino = serial.Serial(port=com_port, baudrate=debit, timeout=10) 
+    except serial.SerialException:
+        print("Arduino not found on port: " + com_port)
+        exit()
+
     time.sleep(1)  # wait for the serial connection to initialize
     print("Connecting to: " + arduino.portstr)
 
