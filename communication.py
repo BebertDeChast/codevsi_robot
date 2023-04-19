@@ -1,8 +1,23 @@
 import serial
 import time
+import serial.tools.list_ports
 
-com_port = 'COM6'
+com_port = None
 debit = 9600
+
+
+def detect_arduino():
+    '''Detect arduino function
+    This function will detect the arduino and return the port
+    '''
+    ports = serial.tools.list_ports.comports()
+    for port in ports:
+        if "Arduino" in port.description:
+            print("Arduino found on port: " + port.device)
+            return port.device
+        else:
+            print("Arduino not found")
+            return None
 
 
 def write(x, target):  # write a string to the arduino
@@ -27,14 +42,19 @@ def compile_data(d_instrustion: dict, g_instrustion: dict, mode: chr = 'r'):
 
 
 def send_instruction(d_instrustion: dict, g_instrustion: dict, mode: chr = 'r'):
+    '''Send instruction function
+    This function will send the instruction to the arduino'''
     write(compile_data(d_instrustion, g_instrustion, mode))
 
 
 def main():
-    try: 
-        arduino = serial.Serial(port=com_port, baudrate=debit, timeout=10) 
+    '''Main function
+    This function will initialize the serial connection with the arduino'''
+    com_port = detect_arduino()
+    try:
+        arduino = serial.Serial(port=com_port, baudrate=debit, timeout=10)
     except serial.SerialException:
-        print("Arduino not found on port: " + com_port)
+        print(f"Arduino not found on port: {com_port}")
         exit()
 
     time.sleep(1)  # wait for the serial connection to initialize
