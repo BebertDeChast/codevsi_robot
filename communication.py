@@ -20,8 +20,9 @@ def detect_arduino(debug=False):
             return port.device
         if "USB Serial" in port.description:
             print("XBee found on port: " + port.device)
+            return port.device
         else:
-            print("Arduino not found")
+            print("Device not found")
             return None
 
 
@@ -55,6 +56,7 @@ def send_instruction(d_instrustion: dict, g_instrustion: dict, mode: chr = 'r'):
 def main():
     '''Main function
     This function will initialize the serial connection with the arduino'''
+    global arduino
     com_port = detect_arduino()
     try:
         arduino = serial.Serial(port=com_port, baudrate=debit, timeout=10)
@@ -73,6 +75,5 @@ def main():
     print("Delay: " + str(t2 - t1))
     if test != "k":
         print("Arduino is not ready")
-        exit()
     else:
         print("Arduino is ready")
