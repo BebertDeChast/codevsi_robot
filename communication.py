@@ -6,15 +6,20 @@ com_port = None
 debit = 9600
 
 
-def detect_arduino():
+def detect_arduino(debug=False):
     '''Detect arduino function
     This function will detect the arduino and return the port
     '''
     ports = serial.tools.list_ports.comports()
+    if debug:
+        for port in ports:
+            print(port.description)
     for port in ports:
         if "Arduino" in port.description:
             print("Arduino found on port: " + port.device)
             return port.device
+        if "USB Serial" in port.description:
+            print("XBee found on port: " + port.device)
         else:
             print("Arduino not found")
             return None
