@@ -26,20 +26,23 @@ def detect_arduino(debug=False):
             return None
 
 
-def write(x, target):  # write a string to the arduino
+def write(x: str, target):  # write a string to the arduino
     target.write(bytes(x, 'utf-8'))
 
 
-def read(target):  # read a string from the arduino
+def read(target) -> str:
     """Read a string from the arduino and return it
     return None if no data is available"""
-    data = target.read()
+    data = target.readline()  # need an \n to end the line and stop communication
+    if data.endswith(b'\n'):  # remove \n if there is one
+        data = data[:-1]
     if data:
         return data.decode("utf-8")
 
 
-def compile_data(d_instrustion: dict, g_instrustion: dict, mode: chr = 'r'):
+def compile_data(d_instrustion: dict, g_instrustion: dict, mode: chr = 'r') -> str:
     """Generate a string to send to the arduino
+    based on the dictionnary of speed instruction
     format:
     mode/D.vitesse(b3).temps(ms)/G.vitesse(b3).temps(ms)"""
     if mode != "l" and mode != "r":
@@ -55,7 +58,7 @@ def send_instruction(d_instrustion: dict, g_instrustion: dict, mode: chr = 'r'):
 
 def main():
     '''Main function
-    This function will initialize the serial connection with the arduino'''
+    This function will initialize the serial connection with the arduino and will test it'''
     global arduino
     com_port = detect_arduino()
     try:

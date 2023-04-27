@@ -40,6 +40,7 @@ def main():
         elif choice == 5:
             print("Goodbye!")
             print("--------------------------------------------------")
+            os.system('cls' if os.name == 'nt' else 'clear')  # clear the screen
             break
         else:
             print("Invalid input")
