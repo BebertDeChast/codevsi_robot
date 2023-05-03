@@ -22,7 +22,11 @@ def main():
     while True:
         os.system('cls' if os.name == 'nt' else 'clear')  # clear the screen
         print_menu()
-        choice = int(input("Please enter a number: "))
+        try:
+            choice = int(input("Please enter a number: "))
+        except ValueError:
+            print("Invalid input")
+            continue
         if choice == 1:
             print("--------------------------------------------------")
             print("Trajectory mode")
