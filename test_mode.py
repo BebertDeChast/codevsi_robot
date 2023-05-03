@@ -14,6 +14,6 @@ def main():
             break
         communication.write(data, communication.arduino)
         print("Instruction sent")
-        print("Reading...")
-        print(communication.read(communication.arduino))
+        # print("Reading...")
+        # print(communication.read(communication.arduino))
     return
