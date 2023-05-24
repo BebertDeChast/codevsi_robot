@@ -1,8 +1,7 @@
 import numpy as np
-import matplotlib
 import matplotlib.pyplot as plt
 from matplotlib.animation import PillowWriter
-T0 = 0.01  # (s) periode de consigne
+T0 = 0.1  # (s) periode de consigne
 amax = 5  # (m/s²) accélération maximale nominale des roues (moins une marge)
 vmax = 1  # (m/s) vitesse maximale nominale des roues (moins une marge)
 r = 0.04  # (m) rayon des roues

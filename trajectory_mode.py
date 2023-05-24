@@ -1,5 +1,5 @@
 import communication
-import Codevsi_trajectoire as trajectoire
+import trajectoire as trajectoire
 
 
 def main():
