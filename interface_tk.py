@@ -309,14 +309,6 @@ def changebt():
     bt_STOP.place(x=403, y=375, anchor=SW)
 
 
-def reset():
-    bt_START.place(x=401, y=375, anchor=SW)
-    bt_STOP.place_forget()
-    bt_RESTART.place_forget()
-    bt_GO.place_forget()
-    fait_reset()
-
-
 def stop():
     bt_START.place(x=401, y=375, anchor=SW)
     bt_STOP.place_forget()

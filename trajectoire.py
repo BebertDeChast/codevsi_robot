@@ -161,8 +161,8 @@ def read_BACK(x, y, xr, yr, xl, yl):
     anr = np.arctan2(ver[1], ver[0])
     a = np.pi - (ant - anr)
     l = np.linalg.norm(vet)
-    ar = read_ROT(a * 180 / np.pi, 1)[1] + read_LIN(l, 1)[1]
-    al = read_ROT(a * 180 / np.pi, 1)[0] + read_LIN(l, 1)[0]
+    ar = read_ROT(a * 180 / np.pi, 1)[0][1] + read_LIN(l, 1)[0][1]
+    al = read_ROT(a * 180 / np.pi, 1)[0][0] + read_LIN(l, 1)[0][0]
     return (al, ar, [k * T0 for k in range(len(al))])
 
 
