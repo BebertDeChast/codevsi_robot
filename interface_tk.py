@@ -630,24 +630,27 @@ def mise_a_jour_turtle():
             rayon = y
             angle = z
             dessine_arc_express(angle, rayon)
+
+
 def output_trajectoire():
-    out=[]
-    traduction={'rec':'LIN','arc':'CIR','rot':'ROT'}
+    out = []
+    traduction = {'rec': 'LIN', 'arc': 'CIR', 'rot': 'ROT'}
     for k in liste_des_mouvements:
-        x1,y1,z1=k
-        x2=traduction[x1]
-        if x1=='rec':
-            y2=y1/100
-            z2=100*z1
-        if x1=='arc':
-            y2=y1/100
-            z2=z1
-        if x1=='rot':
-            y2=y1
-            z2=z1*100
-        out.append((x2,y2,z2))
+        x1, y1, z1 = k
+        x2 = traduction[x1]
+        if x1 == 'rec':
+            y2 = y1 / 100
+            z2 = 100 * z1
+        if x1 == 'arc':
+            y2 = y1 / 100
+            z2 = z1
+        if x1 == 'rot':
+            y2 = y1
+            z2 = z1 * 100
+        out.append((x2, y2, z2))
     return out
 
-initialisation_generale()
+def main():
+    initialisation_generale()
+    fenetre.mainloop()
 
-fenetre.mainloop()
