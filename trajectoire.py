@@ -260,11 +260,11 @@ def Pakstelle_to_Flobert(vg, vd):
 # Euler (f_, vr[0], ar[0], t, vr, (J*R/KT*KE), (J*L_/KT*KE), 0)
 
 
-def get_trajectoire(instruction):
+def get_trajectoire(instruction, lissage=False):
     """Format of input [[LIN|ROT|CIR|BACK, param1, param2, param3], ...]
     return [[[vg, vd], dt], ...]
     """
-    al, ar, t = chaine(instruction, False)
+    al, ar, t = chaine(instruction, lissage)
     vl = integ(al, 0, T0)
     vr = integ(ar, 0, T0)
     result = Pakstelle_to_Flobert(vl, vr)

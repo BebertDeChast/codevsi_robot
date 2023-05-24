@@ -44,8 +44,8 @@ def main():
             input("Press enter to continue...")
         elif choice == 3:
             print("--------------------------------------------------")
-            print("Test mode")
-            test_mode.main()
+            print("Emiting mode")
+            test_mode.emiting_mode()
         elif choice == 4:
             settings.main()
         elif choice == 5:

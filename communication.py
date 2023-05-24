@@ -88,7 +88,7 @@ def send_instruction(instructions: list, mode: chr = 'r'):
     write(prepare_instruction(instructions, mode), arduino)
 
 
-def main():
+def init():
     '''Main function
     This function will initialize the serial connection with the arduino and will test it'''
     global arduino

@@ -2,11 +2,11 @@ import communication
 import time
 
 
-def main():
+def emiting_mode():
     '''Main function
     This function will initialize the serial connection with the arduino
     Send custom instructions to the arduino and read the response'''
-    communication.main()
+    communication.init()
     print("Starting complete")
 
     while True:
@@ -19,7 +19,8 @@ def main():
 
 
 def listening_mode():
-    communication.main()
+
+    communication.init()
     print("Starting complete")
 
     print("Reading...")

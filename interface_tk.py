@@ -298,10 +298,9 @@ def start():
     instr = output_trajectoire()
     print("Liste des instructions : ")
     print(instr)
-    if instr!=[]:
+    if instr != []:
         list_v = traj.get_trajectoire(instr)
         com.send_instruction(list_v)
-
 
 
 def changebt():
@@ -323,18 +322,17 @@ def stop():
     bt_STOP.place_forget()
     bt_START_LIVE.place(x=600, y=375, anchor=SW)
 
+
 def start_live():
     bt_START.place_forget()
     bt_START_LIVE.place_forget()
     bt_STOP.place(x=403, y=375, anchor=SW)
-    
+
+
 def stop_live():
     bt_START.place(x=401, y=375, anchor=SW)
     bt_STOP_LIVE.place_forget()
     bt_START_LIVE.place(x=600, y=375, anchor=SW)
-
-
-
 
 
 def push(event):
@@ -382,7 +380,7 @@ def push(event):
         print(draw.ycor())
     if t == "r":
         fait_reset()
-        
+
 
 def fait_reset():
     global zoom
@@ -390,8 +388,9 @@ def fait_reset():
     global liste
     liste.delete(0, liste.size() - 1)
     liste_des_mouvements = []
-    zoom=1
+    zoom = 1
     mise_a_jour_turtle()
+
 
 def remise_a_zero_pointeur():
     global nb_left
@@ -407,7 +406,7 @@ def remise_a_zero_pointeur():
 def creer_rec(l):
     if l == 0:
         return None
-    vitesse=curseur1.get()/100
+    vitesse = curseur1.get() / 100
     liste_des_mouvements.append(('rec', l, vitesse))
     direction = 'avant'
     if l < 0:
@@ -434,7 +433,7 @@ def creer_arc(rayon, angle):
 
 
 def creer_rotation(angle):
-    vitesse=curseur1.get()/100
+    vitesse = curseur1.get() / 100
     if angle == 0:
         return None
     sens = 'droite'
@@ -688,15 +687,13 @@ def output_trajectoire():
         if x1 == 'arc':
             y2 = y1 / 100
             z2 = z1
-            out.append((x2, y2, z2,100))
+            out.append((x2, y2, z2, 100))
         if x1 == 'rot':
             y2 = y1
             z2 = z1 * 100
             out.append((x2, y2, z2))
-        
+
     return out
-
-
 
 
 def main():

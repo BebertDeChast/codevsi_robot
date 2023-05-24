@@ -2,7 +2,7 @@ import interface_tk
 import communication
 
 def main():
-    communication.main()
+    communication.init()
     print("Starting interface")
     interface_tk.main()
 
