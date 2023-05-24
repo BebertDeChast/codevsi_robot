@@ -7,7 +7,7 @@ debit = 9600
 
 
 def detect_arduino(debug=False):
-    '''Detect arduino function
+    '''Detect arduino function\n
     This function will detect the arduino and return the port
     '''
     ports = serial.tools.list_ports.comports()
@@ -31,7 +31,7 @@ def write(x: str, target):  # write a string to the arduino
 
 
 def read(target) -> str:
-    """Read a string from the arduino and return it
+    """Read a string from the arduino and return it\n
     return None if no data is available"""
     data = target.readline()  # need an \n to end the line and stop communication
     if data.endswith(b'\n'):  # remove \n if there is one
@@ -41,10 +41,10 @@ def read(target) -> str:
 
 
 def create_string(intruction: list) -> str:
-    """Generate a string to send to the arduino
-    based on the dictionnary of speed instruction
+    """Generate a string to send to the arduino \n
+    based on the dictionnary of speed instruction \n
     input format:
-    [[vitesseG (m/s), vitessD (m/s)],temps(ms))]
+    [[vitesseG (m/s), vitessD (m/s)],temps(ms))] \n
     format:
     SD/Dvitesse(b3)/SG/Gvitesse(%)/temps(ms)"""
     # if mode != "l" and mode != "r":
@@ -81,16 +81,17 @@ def prepare_instruction(instruction: list, mode: chr = 'r') -> str:
 
 
 def send_instruction(instructions: list, mode: chr = 'r'):
-    '''Send instruction function
-    intruction format:\n
-    [[[vg, vd], dt], ...]
+    '''Send instruction function\n
+    intruction format:
+    [[[vg, vd], dt], ...] \n
     This function will send the instruction to the arduino'''
     write(prepare_instruction(instructions, mode), arduino)
 
 
 def init():
-    '''Main function
-    This function will initialize the serial connection with the arduino and will test it'''
+    '''
+    This function will initialize the serial connection with the arduino and will test it
+    '''
     global arduino
     com_port = detect_arduino()
     if com_port is None:
