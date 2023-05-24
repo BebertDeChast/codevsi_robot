@@ -40,13 +40,15 @@ def read(target) -> str:
         return data.decode("utf-8")
 
 
-def compile_data(d_instrustion: dict, g_instrustion: dict, mode: chr = 'r') -> str:
+def create_string(intruction: list, mode: chr = 'r') -> str:
     """Generate a string to send to the arduino
     based on the dictionnary of speed instruction
     format:
-    mode/D.vitesse(b3).temps(ms)/G.vitesse(b3).temps(ms)"""
+    mode//SD/Dvitesse(b3)/SG/Gvitesse(%)/temps(ms)"""
     if mode != "l" and mode != "r":
         raise ValueError("mode must be 'l'(live) or 'r'(remote)")
+    if len(intruction) != 2:
+        raise ValueError("intruction must be a list of a list and a float")
     return f"{mode}/{d_instrustion['vitesse']}.{d_instrustion['temps']}/{g_instrustion['vitesse']}.{g_instrustion['temps']}"
 
 
