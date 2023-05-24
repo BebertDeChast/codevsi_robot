@@ -4,6 +4,8 @@ from math import sin, cos, pi
 import numpy as np
 from PIL import ImageTk, Image
 from turtle import *
+import trajectoire as traj
+import communication as com
 
 
 def initialisation_generale():
@@ -51,9 +53,9 @@ def initialisation_systeme_mise_en_page():
     global bt_arc_DROITE
     global bt_rot_DROITE
     global bt_START
-    global bt_RESTART
+    global bt_START_LIVE
+    global bt_STOP_LIVE
     global bt_STOP
-    global bt_GO
     global bt_Left
     global bt_Down
     global bt_Right
@@ -148,14 +150,17 @@ def initialisation_systeme_mise_en_page():
     bt_rot_DROITE.config(width=16)
     bt_rot_DROITE.place(x=538, y=650, anchor=SW)
     bt_START = Button(ecran, text='START', fg="white", bg="green", command=lambda: start())
-    bt_START.config(height=4, width=55)
-    bt_START.place(x=403, y=375, anchor=SW)
-    bt_RESTART = Button(ecran, text='RESET', fg="white", bg="green", command=lambda: reset())
-    bt_RESTART.config(height=4, width=27)
-    bt_STOP = Button(ecran, text='STOP', fg="white", bg="green", command=lambda: stop())
+    bt_START.config(height=4, width=27)
+    bt_START.place(x=402, y=375, anchor=SW)
+    bt_START_LIVE = Button(ecran, text='PILOTAGE LIVE', fg="white", bg="green", command=lambda: start_live())
+    bt_START_LIVE.config(height=4, width=27)
+    bt_START_LIVE.place(x=601, y=375, anchor=SW)
+    bt_STOP_LIVE = Button(ecran, text='STOP', fg="white", bg="red", command=lambda: stop_live())
+    bt_STOP_LIVE.config(height=4, width=55)
+
+    bt_STOP = Button(ecran, text='STOP', fg="white", bg="red", command=lambda: stop())
     bt_STOP.config(height=4, width=55)
-    bt_GO = Button(ecran, text='GO', fg="white", bg="green", command=lambda: go())
-    bt_GO.config(height=4, width=27)
+
     bt_Left = Button(ecran, text='Left', fg="white", bg="green", state=NORMAL)
     bt_Left.config(width=9, height=4)
     bt_Left.place(x=520, y=250, anchor=SW)
@@ -278,12 +283,17 @@ def rot_droite():
 
 def start():
     changebt()
-    print(curseur1.get())
+    instr = output_trajectoire()
+    if instr!=[]:
+        list_v = traj.get_trajectoire(instr)
+        com.send_instruction(list_v)
+
 
 
 def changebt():
     bt_START.place_forget()
-    bt_STOP.place(x=401, y=375, anchor=SW)
+    bt_START_LIVE.place_forget()
+    bt_STOP.place(x=403, y=375, anchor=SW)
 
 
 def reset():
@@ -291,17 +301,26 @@ def reset():
     bt_STOP.place_forget()
     bt_RESTART.place_forget()
     bt_GO.place_forget()
+    fait_reset()
 
 
 def stop():
+    bt_START.place(x=401, y=375, anchor=SW)
     bt_STOP.place_forget()
-    bt_GO.place(x=401, y=375, anchor=SW)
-    bt_RESTART.place(x=600, y=375, anchor=SW)
+    bt_START_LIVE.place(x=600, y=375, anchor=SW)
+
+def start_live():
+    bt_START.place_forget()
+    bt_START_LIVE.place_forget()
+    bt_STOP.place(x=403, y=375, anchor=SW)
+    
+def stop_live():
+    bt_START.place(x=401, y=375, anchor=SW)
+    bt_STOP_LIVE.place_forget()
+    bt_START_LIVE.place(x=600, y=375, anchor=SW)
 
 
-def go():
-    bt_GO.place_forget()
-    bt_STOP.place(x=401, y=375, anchor=SW)
+
 
 
 def push(event):
@@ -347,10 +366,17 @@ def push(event):
         print(draw.xcor())
         print(draw.ycor())
     if t == "r":
-        liste.delete(0, liste.size() - 1)
-        liste_des_mouvements = []
-        mise_a_jour_turtle()
+        fait_reset()
+        
 
+def fait_reset():
+    global zoom
+    global liste_des_mouvements
+    global liste
+    liste.delete(0, liste.size() - 1)
+    liste_des_mouvements = []
+    zoom=1
+    mise_a_jour_turtle()
 
 def remise_a_zero_pointeur():
     global nb_left
@@ -650,7 +676,8 @@ def output_trajectoire():
         out.append((x2, y2, z2))
     return out
 
+
+
 def main():
     initialisation_generale()
     fenetre.mainloop()
-

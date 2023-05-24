@@ -262,7 +262,7 @@ def Pakstelle_to_Flobert(vg, vd):
 
 def get_trajectoire(instruction):
     """Format of input [[LIN|ROT|CIR|BACK, param1, param2, param3], ...]
-    retutn [[[vg, vd], dt], ...]
+    return [[[vg, vd], dt], ...]
     """
     al, ar, t = chaine(instruction, False)
     vl = integ(al, 0, T0)

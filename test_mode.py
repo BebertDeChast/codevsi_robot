@@ -1,4 +1,5 @@
 import communication
+import time
 
 
 def main():
@@ -14,6 +15,15 @@ def main():
             break
         communication.write(data, communication.arduino)
         print("Instruction sent")
-        # print("Reading...")
-        # print(communication.read(communication.arduino))
     return
+
+
+def listening_mode():
+    communication.main()
+    print("Starting complete")
+
+    print("Reading...")
+    while True:
+        msg = communication.read(communication.arduino)
+        print(time.ctime(time.time()))
+        print(msg)

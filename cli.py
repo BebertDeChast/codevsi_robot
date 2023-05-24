@@ -14,6 +14,7 @@ def print_menu():
     print("3. Test mode")
     print("4. Settings")
     print("5. Trajectory mode")
+    print("6. Listening mode")
 
 
 def main():
@@ -24,7 +25,7 @@ def main():
         os.system('cls' if os.name == 'nt' else 'clear')  # clear the screen
         print_menu()
         try:
-            choice = input("Please enter a number: ")
+            choice = input("Please enter a number (leave empty to exit): ")
         except ValueError:
             print("Invalid input")
             continue
@@ -51,6 +52,10 @@ def main():
             print("--------------------------------------------------")
             print("Trajectory mode")
             trajectory_mode.main()
+        elif choice == 6:
+            print("--------------------------------------------------")
+            print("Listening mode")
+            test_mode.listening_mode()
         else:
             print("Invalid input")
 

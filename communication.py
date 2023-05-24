@@ -51,6 +51,7 @@ def create_string(intruction: list) -> str:
     # raise ValueError("mode must be 'l'(live) or 'r'(remote)")
     if len(intruction) != 2 and len(intruction[0]) != 2:
         raise ValueError("intruction must be a list of a list and a float")
+    # print(intruction)
     SG = int(intruction[0][0] > 0)
     SD = int(intruction[0][1] > 0)
     vd = int(abs(intruction[0][0]) * 100)
@@ -69,18 +70,19 @@ def prepare_instruction(instruction: list, mode: chr = 'r') -> str:
 
     if mode == 'r':
         msg = "r"
+        print(f"Sending {len(instruction)} instructions")
         for i in instruction:
             msg += create_string(i)
         print(msg)
         return msg
     if mode == 'l':
-        msg = "l" + create_string(instruction[0])
+        msg = "l" + create_string(instruction[1])
         return msg
 
 
 def send_instruction(instructions: list, mode: chr = 'r'):
     '''Send instruction function
-    intruction format:
+    intruction format:\n
     [[[vg, vd], dt], ...]
     This function will send the instruction to the arduino'''
     write(prepare_instruction(instructions, mode), arduino)
@@ -91,8 +93,11 @@ def main():
     This function will initialize the serial connection with the arduino and will test it'''
     global arduino
     com_port = detect_arduino()
+    if com_port is None:
+        print("No device found")
+        exit()
     try:
-        arduino = serial.Serial(port=com_port, baudrate=debit, timeout=10)
+        arduino = serial.Serial(port=com_port, baudrate=debit, timeout=5)
     except serial.SerialException:
         print(f"Arduino not found on port: {com_port}")
         exit()
@@ -107,6 +112,6 @@ def main():
     t2 = time.time()
     print("Delay: " + str(t2 - t1))
     if test != "k":
-        print("Arduino is not ready")
+        print("Device does not respond correctly")
     else:
-        print("Arduino is ready")
+        print("Device is ready")
