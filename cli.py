@@ -2,6 +2,7 @@
 import test_mode
 import settings
 import os  # for clearing the screen
+import trajectory_mode
 
 
 def print_menu():
@@ -12,7 +13,7 @@ def print_menu():
     print("2. Live mode")
     print("3. Test mode")
     print("4. Settings")
-    print("5. Exit")
+    print("5. Trajectory mode")
 
 
 def main():
@@ -23,10 +24,15 @@ def main():
         os.system('cls' if os.name == 'nt' else 'clear')  # clear the screen
         print_menu()
         try:
-            choice = int(input("Please enter a number: "))
+            choice = input("Please enter a number: ")
         except ValueError:
             print("Invalid input")
             continue
+        if choice == "":
+            os.system('cls' if os.name == 'nt' else 'clear')  # clear the screen
+            break
+        
+        choice = int(choice)
         if choice == 1:
             print("--------------------------------------------------")
             print("Trajectory mode")
@@ -42,10 +48,9 @@ def main():
         elif choice == 4:
             settings.main()
         elif choice == 5:
-            print("Goodbye!")
             print("--------------------------------------------------")
-            os.system('cls' if os.name == 'nt' else 'clear')  # clear the screen
-            break
+            print("Trajectory mode")
+            trajectory_mode.main()
         else:
             print("Invalid input")
 

@@ -120,7 +120,7 @@ def gen_trap(a, v, l):
     tau = v / a
     T = abs(l / v)
     if T < tau:
-        tau = (l / a)**(1 / 2)
+        tau = abs(l / a)**(1 / 2)
         T = 0
     nbptpente = int(tau // T0)
     nbptplateau = int((T - tau) // T0)
@@ -263,7 +263,7 @@ def Pakstelle_to_Flobert(vg, vd):
 
 def get_trajectoire(instruction):
     """Format of input [[LIN|ROT|CIR|BACK, param1, param2, param3], ...]
-    retutn [[(vg, vd), dt], ...]
+    retutn [[[vg, vd], dt], ...]
     """
     al, ar, t = chaine(instruction, False)
     vl = integ(al, 0, T0)

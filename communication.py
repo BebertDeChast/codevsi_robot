@@ -40,22 +40,50 @@ def read(target) -> str:
         return data.decode("utf-8")
 
 
-def create_string(intruction: list, mode: chr = 'r') -> str:
+def create_string(intruction: list) -> str:
     """Generate a string to send to the arduino
     based on the dictionnary of speed instruction
+    input format:
+    [[vitesseG (m/s), vitessD (m/s)],temps(ms))]
     format:
-    mode//SD/Dvitesse(b3)/SG/Gvitesse(%)/temps(ms)"""
+    SD/Dvitesse(b3)/SG/Gvitesse(%)/temps(ms)"""
+    # if mode != "l" and mode != "r":
+    # raise ValueError("mode must be 'l'(live) or 'r'(remote)")
+    if len(intruction) != 2 and len(intruction[0]) != 2:
+        raise ValueError("intruction must be a list of a list and a float")
+    SG = int(intruction[0][0] > 0)
+    SD = int(intruction[0][1] > 0)
+    vd = int(abs(intruction[0][0]) * 100)
+    vg = int(abs(intruction[0][1]) * 100)
+    t = int(intruction[1] * 100)
+    return f"/{SD}/{vd}/{SG}/{vg}/{t}"
+
+
+def prepare_instruction(instruction: list, mode: chr = 'r') -> str:
+    """
+    instruction format:
+    [[[vg, vd], dt], ...]
+    """
     if mode != "l" and mode != "r":
         raise ValueError("mode must be 'l'(live) or 'r'(remote)")
-    if len(intruction) != 2:
-        raise ValueError("intruction must be a list of a list and a float")
-    return f"{mode}/{d_instrustion['vitesse']}.{d_instrustion['temps']}/{g_instrustion['vitesse']}.{g_instrustion['temps']}"
+
+    if mode == 'r':
+        msg = "r"
+        for i in instruction:
+            msg += create_string(i)
+        print(msg)
+        return msg
+    if mode == 'l':
+        msg = "l" + create_string(instruction[0])
+        return msg
 
 
-def send_instruction(d_instrustion: dict, g_instrustion: dict, mode: chr = 'r'):
+def send_instruction(instructions: list, mode: chr = 'r'):
     '''Send instruction function
+    intruction format:
+    [[[vg, vd], dt], ...]
     This function will send the instruction to the arduino'''
-    write(compile_data(d_instrustion, g_instrustion, mode))
+    write(prepare_instruction(instructions, mode), arduino)
 
 
 def main():
