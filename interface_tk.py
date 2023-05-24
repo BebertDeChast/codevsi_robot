@@ -61,6 +61,12 @@ def initialisation_systeme_mise_en_page():
     global bt_Right
     global bt_Up
     global liste
+    global value_longueur_rec
+    global value_vitesse_rec
+    global value_angle_rot
+    global value_vitesse_rot
+    global value_angle_arc
+    global value_rayon_arc
     fenetre = Tk()
     fenetre.title("TEST robot")
     ecran = Canvas(fenetre, width=800, height=750, bg="grey")
@@ -126,9 +132,9 @@ def initialisation_systeme_mise_en_page():
     angle_arc = Label(ecran, text="angle", bg="white", width=17)
     angle_arc.place(x=670, y=500)
     # affichage curseur
-    curseur1 = Scale(ecran, length=254, from_=254, to=0, tickinterval=100, sliderrelief='flat', highlightthickness=0, background='grey', fg='white', troughcolor='#73B5FA', activebackground='#1065BF')
+    curseur1 = Scale(ecran, length=254, from_=100, to=0, tickinterval=100, sliderrelief='flat', highlightthickness=0, background='grey', fg='white', troughcolor='#73B5FA', activebackground='#1065BF')
     curseur1.place(x=410, y=17, anchor=NW)
-    curseur1.set(254)
+    curseur1.set(50)
     # les boutons
     bt_arc_GAUCHE = Button(ecran, text='gauche', fg="white", bg="green", command=lambda: arc_gauche())
     bt_arc_GAUCHE.config(width=16)
@@ -194,6 +200,8 @@ def position_curseur():
 
 
 def valid_rot():
+    global value_angle_rot
+    global value_vitesse_rot
     if isNumeric(value_angle_rot.get()):
         if isNumeric(value_vitesse_rot.get()):
             vitesse = float(value_vitesse_rot.get())
@@ -216,6 +224,8 @@ def valid_rot():
 
 
 def valid_rec():
+    global value_longueur_rec
+    global value_vitesse_rec
     if isNumeric(value_longueur_rec.get()):
         if isNumeric(value_vitesse_rec.get()):
             vitesse = float(value_vitesse_rec.get())
@@ -235,6 +245,8 @@ def valid_rec():
 
 
 def valid_arc():
+    global value_angle_arc
+    global value_rayon_arc
     if isNumeric(value_angle_arc.get()) and isNumeric(value_rayon_arc.get()):
         pos = position_curseur()
         liste.insert(pos, f"Arc de cercle de {value_angle_arc.get()} rad de rayon {value_rayon_arc.get()} cm à {arc_sens}")
@@ -244,7 +256,7 @@ def valid_arc():
         if arc_sens == "gauche":
             rayon_ = -rayon
         if pos == END:
-            dessine_arc(angle, rayon, arc_sens)
+            dessine_arc_express(angle, rayon_)
             liste_des_mouvements.append(('arc', rayon_, angle))
         else:
             liste_des_mouvements.insert(pos, ('arc', rayon_, angle))
@@ -284,6 +296,8 @@ def rot_droite():
 def start():
     changebt()
     instr = output_trajectoire()
+    print("Liste des instructions : ")
+    print(instr)
     if instr!=[]:
         list_v = traj.get_trajectoire(instr)
         com.send_instruction(list_v)
@@ -344,10 +358,10 @@ def push(event):
         bt_Down['state'] = DISABLED
     if t == "z":
         a = curseur1.get() + 10
-        if a < 255:
+        if a < 100:
             curseur1.set(a)
         else:
-            curseur1.set(254)
+            curseur1.set(100)
     if t == "s":
         a = curseur1.get() - 10
         if a >= 0:
@@ -356,6 +370,7 @@ def push(event):
             curseur1.set(0)
     if t == "space":
         mise_a_jour_turtle()
+        print(output_trajectoire())
     if t == "BackSpace":
         sel = liste.curselection()
         if len(sel) >= 1:
@@ -392,12 +407,13 @@ def remise_a_zero_pointeur():
 def creer_rec(l):
     if l == 0:
         return None
-    liste_des_mouvements.append(('rec', l, 1))
+    vitesse=curseur1.get()/100
+    liste_des_mouvements.append(('rec', l, vitesse))
     direction = 'avant'
     if l < 0:
         l = -l
         direction = 'arrière'
-    liste.insert(END, f"Trajectoire rectiligne {l} cm à {1} m/s en {direction}")
+    liste.insert(END, f"Trajectoire rectiligne {l} cm à {vitesse} m/s en {direction}")
     remise_a_zero_pointeur()
 
 
@@ -418,10 +434,11 @@ def creer_arc(rayon, angle):
 
 
 def creer_rotation(angle):
+    vitesse=curseur1.get()/100
     if angle == 0:
         return None
     sens = 'droite'
-    liste_des_mouvements.append(('rot', angle, 1))
+    liste_des_mouvements.append(('rot', angle, vitesse))
     if angle < 0:
         angle = -angle
         sens = 'gauche'
@@ -667,14 +684,18 @@ def output_trajectoire():
         if x1 == 'rec':
             y2 = y1 / 100
             z2 = 100 * z1
+            out.append((x2, y2, z2))
         if x1 == 'arc':
             y2 = y1 / 100
             z2 = z1
+            out.append((x2, y2, z2,100))
         if x1 == 'rot':
             y2 = y1
             z2 = z1 * 100
-        out.append((x2, y2, z2))
+            out.append((x2, y2, z2))
+        
     return out
+
 
 
 
