@@ -10,7 +10,7 @@ def main():
     print("Starting complete")
 
     while True:
-        data = input("Format of input [[LIN|ROT|CIR|BACK, param1, param2, param3], ...]\n Enter instruction (leave empty to exit): ")
+        data = input("Format of input [[LIN|ROT|CIR|BACK, param1, param2, param3], ...] \nEnter instruction (leave empty to exit): ")
         if data == "":
             break
         traj = trajectoire.get_trajectoire(eval(data))

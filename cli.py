@@ -13,8 +13,7 @@ def print_menu():
     print("2. Live mode")
     print("3. Test mode")
     print("4. Settings")
-    print("5. Trajectory mode")
-    print("6. Listening mode")
+    print("5. Listening mode")
 
 
 def main():
@@ -37,10 +36,10 @@ def main():
         if choice == 1:
             print("--------------------------------------------------")
             print("Trajectory mode")
-            input("Press enter to continue...")
+            trajectory_mode.main()
         elif choice == 2:
             print("--------------------------------------------------")
-            print("Live mode")
+            print("Live mode not implemented yet")
             input("Press enter to continue...")
         elif choice == 3:
             print("--------------------------------------------------")
@@ -49,10 +48,6 @@ def main():
         elif choice == 4:
             settings.main()
         elif choice == 5:
-            print("--------------------------------------------------")
-            print("Trajectory mode")
-            trajectory_mode.main()
-        elif choice == 6:
             print("--------------------------------------------------")
             print("Listening mode")
             test_mode.listening_mode()
