@@ -28,7 +28,9 @@ def initialisation_systeme_variable():
     global up
     global vitesse
     global Stop
+    global lissage
     zoom = 1
+    lissage=True
     liste_des_mouvements = []
     arc_sens = "droite"
     rot_sens = "droite"
@@ -67,11 +69,14 @@ def initialisation_systeme_mise_en_page():
     global value_vitesse_rot
     global value_angle_arc
     global value_rayon_arc
+    global bt_START_LISS
+    global bt_STOP_LISS
+    global bt_rot_GAUCHE
     fenetre = Tk()
     fenetre.title("TEST robot")
-    ecran = Canvas(fenetre, width=800, height=750, bg="grey")
+    ecran = Canvas(fenetre, width=800, height=750, bg="lightgoldenrodyellow")
     ecran.pack(side=LEFT)
-    Ima = Canvas(fenetre, width=700, height=750, bg="blue")
+    Ima = Canvas(fenetre, width=700, height=750, bg="lightgoldenrodyellow")
     Ima.pack(side=RIGHT)
     draw = RawTurtle(Ima)
     # affichage des traits
@@ -81,43 +86,43 @@ def initialisation_systeme_mise_en_page():
     ecran.create_line(666, 447, 666, 750, width=2)
     ecran.create_line(400, 447, 800, 447, width=2)
     # affichage des labels
-    gen_traj = Label(ecran, text="Genérateur de trajectoire", bg="white", width=55, height=4)
+    gen_traj = Label(ecran, text="Genérateur de trajectoire", bg="dimgrey", width=55, height=4)
     gen_traj.place(x=404, y=378)
     # Affichage de la liste
     liste = Listbox(ecran, width=60, height=20)
     liste.place(x=18, y=25)
     # Partie rectiligne
-    Rectiligne = Label(ecran, text="Rectiligne", bg="white", width=17)
+    Rectiligne = Label(ecran, text="Rectiligne", bg="dimgrey", width=17)
     Rectiligne.place(x=404, y=450)
     value_longueur_rec = StringVar()
     value_longueur_rec.set("")
     value_vitesse_rec = StringVar()
     value_vitesse_rec.set("")
-    long_rec = Label(ecran, text="longueur", bg="white", width=17)
+    long_rec = Label(ecran, text="longueur", bg="grey", width=17)
     long_rec.place(x=404, y=500)
     entree_long_rec = Entry(ecran, textvariable=value_longueur_rec, width=20)
     entree_long_rec.place(x=404, y=525)
-    vit_rec = Label(ecran, text="vitesse", bg="white", width=17)
+    vit_rec = Label(ecran, text="vitesse", bg="grey", width=17)
     vit_rec.place(x=404, y=550)
     entree_vit_rec = Entry(ecran, textvariable=value_vitesse_rec, width=20)
     entree_vit_rec.place(x=404, y=575)
     # Partie rotation
-    Rotation = Label(ecran, text="Rotation", bg="white", width=17)
+    Rotation = Label(ecran, text="Rotation", bg="dimgrey", width=17)
     Rotation.place(x=537, y=450)
     value_angle_rot = StringVar()
     value_angle_rot.set("")
     value_vitesse_rot = StringVar()
     value_vitesse_rot.set("")
-    angle_rot = Label(ecran, text="angle", bg="white", width=17)
+    angle_rot = Label(ecran, text="angle", bg="grey", width=17)
     angle_rot.place(x=537, y=500)
     entree_angle_rot = Entry(ecran, textvariable=value_angle_rot, width=20)
     entree_angle_rot.place(x=537, y=525)
-    vit_rec = Label(ecran, text="vitesse", bg="white", width=17)
+    vit_rec = Label(ecran, text="vitesse", bg="grey", width=17)
     vit_rec.place(x=537, y=550)
     entree_vit_rot = Entry(ecran, textvariable=value_vitesse_rot, width=20)
     entree_vit_rot.place(x=537, y=575)
     # Partie arc de cercle
-    Arc_de_cercle = Label(ecran, text="Arc de cercle", bg="white", width=17)
+    Arc_de_cercle = Label(ecran, text="Arc de cercle", bg="dimgrey", width=17)
     Arc_de_cercle.place(x=670, y=450)
     value_angle_arc = StringVar()
     value_angle_arc.set("")
@@ -125,58 +130,62 @@ def initialisation_systeme_mise_en_page():
     value_rayon_arc.set("")
     entree_angle_arc = Entry(ecran, textvariable=value_angle_arc, width=20)
     entree_angle_arc.place(x=670, y=525)
-    rayon_arc = Label(ecran, text="rayon", bg="white", width=17)
+    rayon_arc = Label(ecran, text="rayon", bg="grey", width=17)
     rayon_arc.place(x=670, y=550)
     entree_rayon_arc = Entry(ecran, textvariable=value_rayon_arc, width=20)
     entree_rayon_arc.place(x=670, y=575)
-    angle_arc = Label(ecran, text="angle", bg="white", width=17)
+    angle_arc = Label(ecran, text="angle", bg="grey", width=17)
     angle_arc.place(x=670, y=500)
     # affichage curseur
-    curseur1 = Scale(ecran, length=254, from_=100, to=0, tickinterval=100, sliderrelief='flat', highlightthickness=0, background='grey', fg='white', troughcolor='#73B5FA', activebackground='#1065BF')
+    curseur1 = Scale(ecran, length=254, from_=100, to=0, tickinterval=100, sliderrelief='flat', highlightthickness=0, background='lightgoldenrodyellow', troughcolor='#73B5FA', activebackground='#1065BF')
     curseur1.place(x=410, y=17, anchor=NW)
-    curseur1.set(50)
+    curseur1.set(80)
     # les boutons
-    bt_arc_GAUCHE = Button(ecran, text='gauche', fg="white", bg="green", command=lambda: arc_gauche())
+    bt_arc_GAUCHE = Button(ecran, text='gauche', fg="white", bg="darkolivegreen", command=lambda: arc_gauche())
     bt_arc_GAUCHE.config(width=16)
-    bt_rot_GAUCHE = Button(ecran, text='gauche', fg="white", bg="green", command=lambda: rot_gauche())
+    bt_rot_GAUCHE = Button(ecran, text='gauche', fg="white", bg="darkolivegreen", command=lambda: rot_gauche())
     bt_rot_GAUCHE.config(width=16)
-    bt_valid_rec = Button(ecran, text='generate', fg="white", bg="green", command=lambda: valid_rec())
+    bt_valid_rec = Button(ecran, text='generate', fg="white", bg="darkolivegreen", command=lambda: valid_rec())
     bt_valid_rec.config(width=16)
     bt_valid_rec.place(x=405, y=700, anchor=SW)
-    bt_valid_rot = Button(ecran, text='generate', fg="white", bg="green", command=lambda: valid_rot())
+    bt_valid_rot = Button(ecran, text='generate', fg="white", bg="darkolivegreen", command=lambda: valid_rot())
     bt_valid_rot.config(width=16)
     bt_valid_rot.place(x=538, y=700, anchor=SW)
-    bt_valid_arc = Button(ecran, text='generate', fg="white", bg="green", command=lambda: valid_arc())
+    bt_valid_arc = Button(ecran, text='generate', fg="white", bg="darkolivegreen", command=lambda: valid_arc())
     bt_valid_arc.config(width=16)
     bt_valid_arc.place(x=672, y=700, anchor=SW)
-    bt_arc_DROITE = Button(ecran, text='droite', fg="white", bg="green", command=lambda: arc_droite())
+    bt_arc_DROITE = Button(ecran, text='droite', fg="white", bg="darkolivegreen", command=lambda: arc_droite())
     bt_arc_DROITE.config(width=16)
     bt_arc_DROITE.place(x=672, y=650, anchor=SW)
-    bt_rot_DROITE = Button(ecran, text='droite', fg="white", bg="green", command=lambda: rot_droite())
+    bt_rot_DROITE = Button(ecran, text='droite', fg="white", bg="darkolivegreen", command=lambda: rot_droite())
     bt_rot_DROITE.config(width=16)
     bt_rot_DROITE.place(x=538, y=650, anchor=SW)
-    bt_START = Button(ecran, text='START', fg="white", bg="green", command=lambda: start())
+    bt_START = Button(ecran, text='START', fg="white", bg="darkolivegreen", command=lambda: start())
     bt_START.config(height=4, width=27)
     bt_START.place(x=402, y=375, anchor=SW)
-    bt_START_LIVE = Button(ecran, text='PILOTAGE LIVE', fg="white", bg="green", command=lambda: start_live())
+    bt_START_LIVE = Button(ecran, text='PILOTAGE LIVE', fg="white", bg="darkolivegreen", command=lambda: start_live())
     bt_START_LIVE.config(height=4, width=27)
     bt_START_LIVE.place(x=601, y=375, anchor=SW)
     bt_STOP_LIVE = Button(ecran, text='STOP', fg="white", bg="red", command=lambda: stop_live())
     bt_STOP_LIVE.config(height=4, width=55)
-
+    bt_START_LISS = Button(ecran, text='Lissage trajectoire activé', bg="yellow", command=lambda: stop_liss())
+    bt_START_LISS.config(height=3, width=30)
+    bt_START_LISS.place(x=10, y=444, anchor=SW)
+    bt_STOP_LISS = Button(ecran, text='Lissage trajectoire désactivé', bg="yellow", command=lambda: start_liss())
+    bt_STOP_LISS.config(height=3, width=30)
     bt_STOP = Button(ecran, text='STOP', fg="white", bg="red", command=lambda: stop())
     bt_STOP.config(height=4, width=55)
 
-    bt_Left = Button(ecran, text='Left', fg="white", bg="green", state=NORMAL)
+    bt_Left = Button(ecran, text='Left', fg="white", bg="darkolivegreen", state=NORMAL)
     bt_Left.config(width=9, height=4)
     bt_Left.place(x=520, y=250, anchor=SW)
-    bt_Down = Button(ecran, text='Down', fg="white", bg="green")
+    bt_Down = Button(ecran, text='Down', fg="white", bg="darkolivegreen")
     bt_Down.config(width=9, height=4)
     bt_Down.place(x=610, y=250, anchor=SW)
-    bt_Right = Button(ecran, text='Right', fg="white", bg="green")
+    bt_Right = Button(ecran, text='Right', fg="white", bg="darkolivegreen")
     bt_Right.config(width=9, height=4)
     bt_Right.place(x=700, y=250, anchor=SW)
-    bt_Up = Button(ecran, text='Up', fg="white", bg="green")
+    bt_Up = Button(ecran, text='Up', fg="white", bg="darkolivegreen")
     bt_Up.config(width=9, height=4)
     bt_Up.place(x=610, y=165, anchor=SW)
     # configuration cavier
@@ -294,12 +303,13 @@ def rot_droite():
 
 
 def start():
+    global lissage
     changebt()
     instr = output_trajectoire()
     print("Liste des instructions : ")
     print(instr)
     if instr != []:
-        list_v = traj.get_trajectoire(instr)
+        list_v = traj.get_trajectoire(instr,lissage=lissage)
         com.send_instruction(list_v)
 
 
@@ -325,6 +335,19 @@ def stop_live():
     bt_START.place(x=401, y=375, anchor=SW)
     bt_STOP_LIVE.place_forget()
     bt_START_LIVE.place(x=600, y=375, anchor=SW)
+    
+def stop_liss():
+    global lissage
+    lissage=False
+    bt_START_LISS.place_forget()
+    bt_STOP_LISS.place(x=10, y=444, anchor=SW)
+
+
+def start_liss():
+    global lissage
+    lissage=True
+    bt_STOP_LISS.place_forget()
+    bt_START_LISS.place(x=10, y=444, anchor=SW)
 
 
 def push(event):
