@@ -6,6 +6,7 @@ from PIL import ImageTk, Image
 from turtle import *
 import trajectoire as traj
 import communication as com
+from math import atan
 
 
 def initialisation_generale():
@@ -76,7 +77,7 @@ def initialisation_systeme_mise_en_page():
     fenetre.title("TEST robot")
     ecran = Canvas(fenetre, width=800, height=750, bg="whitesmoke")
     ecran.pack(side=LEFT)
-    Ima = Canvas(fenetre, width=700, height=750, bg="whitesmoke)
+    Ima = Canvas(fenetre, width=700, height=750, bg="whitesmoke")
     Ima.pack(side=RIGHT)
     draw = RawTurtle(Ima)
     # affichage des traits
@@ -147,6 +148,9 @@ def initialisation_systeme_mise_en_page():
     bt_rot_GAUCHE.config(width=16)
     bt_valid_rec = Button(ecran, text='generate', fg="white", bg="darkolivegreen", command=lambda: valid_rec())
     bt_valid_rec.config(width=16)
+    bt_back = Button(ecran, text='back', fg="white", bg="darkolivegreen", command=lambda: valid_back())
+    bt_back.config(width=16)
+    bt_back.place(x=405, y=650, anchor=SW)
     bt_valid_rec.place(x=405, y=700, anchor=SW)
     bt_valid_rot = Button(ecran, text='generate', fg="white", bg="darkolivegreen", command=lambda: valid_rot())
     bt_valid_rot.config(width=16)
@@ -348,6 +352,46 @@ def start_liss():
     lissage=True
     bt_STOP_LISS.place_forget()
     bt_START_LISS.place(x=10, y=444, anchor=SW)
+
+def valid_back():
+    pos = position_curseur()
+    if pos != END:
+        a,b,c=liste_des_mouvements[pos-1]
+        t,u,v=liste_des_mouvements[pos]
+        if a=='back' or t=='back':
+            return None
+        liste.insert(pos, f"BACK")
+        liste_des_mouvements.insert(pos, ('back', 'back', 'back'))
+        mise_a_jour_turtle()
+    else:
+        a,b,c=liste_des_mouvements[-1]
+        if a=='back':
+            return None
+        liste.insert(pos, f"BACK")
+        liste_des_mouvements.append(('back', 'back', 'back'))
+        dessine_back()
+    
+def dessine_back():
+    x=draw.xcor()
+    y=draw.ycor()
+    if x>0:
+        angle=atan(y/x)
+    elif x<0:
+        angle=atan(y/x)+pi
+    elif y<0:
+        angle=-pi
+    elif y>0:
+        angle=pi
+    else :
+        return None
+    draw.setheading((angle+pi)*180/pi)
+    l=(x**2+y**2)**0.5
+    draw.forward(l / zoom)
+
+
+        
+
+    
 
 
 def push(event):
@@ -675,7 +719,7 @@ def mise_a_jour_turtle():
     draw.clear()
     draw.penup()
     draw.setx(00)
-    draw.sety(-200)
+    draw.sety(0)
     draw.pendown()
     draw.setheading(90)
     for x, y, z in liste_des_mouvements:
@@ -687,11 +731,13 @@ def mise_a_jour_turtle():
             rayon = y
             angle = z
             dessine_arc_express(angle, rayon)
+        elif x=='back':
+            dessine_back()
 
 
 def output_trajectoire():
     out = []
-    traduction = {'rec': 'LIN', 'arc': 'CIR', 'rot': 'ROT'}
+    traduction = {'rec': 'LIN', 'arc': 'CIR', 'rot': 'ROT','back':'back'}
     for k in liste_des_mouvements:
         x1, y1, z1 = k
         x2 = traduction[x1]
@@ -707,6 +753,8 @@ def output_trajectoire():
             y2 = y1
             z2 = z1 * 100
             out.append((x2, y2, z2))
+        if x1=='back':
+            out.append(("BACK"))
 
     return out
 
