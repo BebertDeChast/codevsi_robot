@@ -14,6 +14,8 @@ def emiting_mode():
         data = input("Enter instruction (leave empty to exit): ")
         if data == "":
             break
+        # if data == "s": #! Not working
+        #     communication.stop()
         communication.write(data, communication.arduino)
         print("Instruction sent")
     return

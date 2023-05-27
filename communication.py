@@ -44,7 +44,7 @@ def create_string(intruction: list) -> str:
     """Generate a string to send to the arduino \n
     based on the dictionnary of speed instruction \n
     input format:
-    [[vitesseG (m/s), vitessD (m/s)],temps(ms))] \n
+    [[vitesseG (rad/s), vitessD (rad/s)],temps(ms))] \n
     format:
     SD/Dvitesse(b3)/SG/Gvitesse(%)/temps(ms)"""
     # if mode != "l" and mode != "r":
@@ -54,9 +54,9 @@ def create_string(intruction: list) -> str:
     # print(intruction)
     SG = int(intruction[0][0] > 0)
     SD = int(intruction[0][1] > 0)
-    vd = int(abs(intruction[0][0]) * 100)
-    vg = int(abs(intruction[0][1]) * 100)
-    t = int(intruction[1] * 100)
+    vd = int(abs(intruction[0][0])*100)
+    vg = int(abs(intruction[0][1])*100)
+    t = int(intruction[1] * 1000)
     return f"/{SD}/{vd}/{SG}/{vg}/{t}"
 
 
@@ -88,6 +88,17 @@ def send_instruction(instructions: list, mode: chr = 'r'):
     write(prepare_instruction(instructions, mode), arduino)
 
 
+def stop():
+    """Not working on the arduino side\n"""
+    print("Stoping")
+    i = 0
+    write("s", arduino)
+    while read(arduino) != "o" and i != 100:
+        write("s", arduino)
+        i += 1
+    print(f"Stoped after {i} tries")
+
+
 def init():
     '''
     This function will initialize the serial connection with the arduino and will test it
@@ -98,10 +109,10 @@ def init():
         print("No device found")
         exit()
     try:
-        arduino = serial.Serial(port=com_port, baudrate=debit, timeout=5)
+        arduino = serial.Serial(port=com_port, baudrate=debit, timeout=2)
     except serial.SerialException:
         print(f"Arduino not found on port: {com_port}")
-        exit()
+        # exit()
 
     time.sleep(1)  # wait for the serial connection to initialize
     print("Connecting to: " + arduino.portstr)

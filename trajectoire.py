@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import PillowWriter
 T0 = 0.1  # (s) periode de consigne
 amax = 5  # (m/s²) accélération maximale nominale des roues (moins une marge)
-vmax = 1  # (m/s) vitesse maximale nominale des roues (moins une marge)
+vmax = 0.8  # (m/s) vitesse maximale nominale des roues (moins une marge)
 r = 0.04  # (m) rayon des roues
-L = 0.5  # (m) largeur du habot
+L = 0.3  # (m) largeur du robot
 G0 = (0, 0)  # position initiale du barycentre du habot
 a0 = 0  # angle initial formant l'axe des roues du habot avec le repère
 m = 6  # (kg) masse du habot
@@ -254,7 +254,7 @@ def Pakstelle_to_Flobert(vg, vd):
         if rep[-1][0][0] == vg[i] and rep[-1][0][1] == vd[i]:
             rep[-1][1] += dt
         else:
-            rep.append([[vg[i], vd[i]], dt])
+            rep.append([[vg[i]/r, vd[i]/r], dt])
     return rep
 
 # Euler (f_, vr[0], ar[0], t, vr, (J*R/KT*KE), (J*L_/KT*KE), 0)

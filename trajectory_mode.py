@@ -13,6 +13,8 @@ def main():
         data = input("Format of input [[LIN|ROT|CIR|BACK, param1, param2, param3], ...] \nEnter instruction (leave empty to exit): ")
         if data == "":
             break
+        # if data == "s": #! Not working
+        #     communication.stop()
         traj = trajectoire.get_trajectoire(eval(data))
         communication.send_instruction(traj)
         print("Instruction sent")
