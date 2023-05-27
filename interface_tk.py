@@ -73,6 +73,7 @@ def initialisation_systeme_mise_en_page():
     global bt_START_LISS
     global bt_STOP_LISS
     global bt_rot_GAUCHE
+    global bt_double
     fenetre = Tk()
     fenetre.title("TEST robot")
     ecran = Canvas(fenetre, width=800, height=750, bg="whitesmoke")
@@ -175,6 +176,9 @@ def initialisation_systeme_mise_en_page():
     bt_START_LISS = Button(ecran, text='Lissage trajectoire activé', bg="yellow", command=lambda: stop_liss())
     bt_START_LISS.config(height=3, width=30)
     bt_START_LISS.place(x=10, y=444, anchor=SW)
+    bt_double = Button(ecran, text='Double trajectoire', bg="yellow", command=lambda: double_tr())
+    bt_double.config(height=3, width=30)
+    bt_double.place(x=10, y=504, anchor=SW)
     bt_STOP_LISS = Button(ecran, text='Lissage trajectoire désactivé', bg="yellow", command=lambda: start_liss())
     bt_STOP_LISS.config(height=3, width=30)
     bt_STOP = Button(ecran, text='STOP', fg="white", bg="red", command=lambda: stop())
@@ -305,7 +309,18 @@ def rot_droite():
     bt_rot_DROITE.place_forget()
     bt_rot_GAUCHE.place(x=538, y=650, anchor=SW)
 
-
+def double_tr():
+    global liste
+    if len(liste_des_mouvements)>50:
+        return None
+    for k in range(len(liste_des_mouvements)):
+        liste_des_mouvements.append(liste_des_mouvements[k])
+        liste.insert(END,liste.get(k))
+    mise_a_jour_turtle()
+        
+        
+    
+    
 def start():
     global lissage
     changebt()
@@ -510,7 +525,7 @@ def valid_left():
     global Stop
     if Stop:
         return False
-    return left and not right
+    return (left and (not right) and (not down)) or (right and (not left) and down)
 
 
 def valid_right():
@@ -519,7 +534,7 @@ def valid_right():
     global Stop
     if Stop:
         return False
-    return right and not left
+    return (right and (not left) and (not down)) or (left and (not right) and down)
 
 
 def valid_up():
