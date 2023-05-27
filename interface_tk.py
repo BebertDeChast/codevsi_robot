@@ -74,9 +74,9 @@ def initialisation_systeme_mise_en_page():
     global bt_rot_GAUCHE
     fenetre = Tk()
     fenetre.title("TEST robot")
-    ecran = Canvas(fenetre, width=800, height=750, bg="lightgoldenrodyellow")
+    ecran = Canvas(fenetre, width=800, height=750, bg="whitesmoke")
     ecran.pack(side=LEFT)
-    Ima = Canvas(fenetre, width=700, height=750, bg="lightgoldenrodyellow")
+    Ima = Canvas(fenetre, width=700, height=750, bg="whitesmoke)
     Ima.pack(side=RIGHT)
     draw = RawTurtle(Ima)
     # affichage des traits
@@ -137,7 +137,7 @@ def initialisation_systeme_mise_en_page():
     angle_arc = Label(ecran, text="angle", bg="grey", width=17)
     angle_arc.place(x=670, y=500)
     # affichage curseur
-    curseur1 = Scale(ecran, length=254, from_=100, to=0, tickinterval=100, sliderrelief='flat', highlightthickness=0, background='lightgoldenrodyellow', troughcolor='#73B5FA', activebackground='#1065BF')
+    curseur1 = Scale(ecran, length=254, from_=100, to=0, tickinterval=100, sliderrelief='flat', highlightthickness=0, background='whitesmoke', troughcolor='#73B5FA', activebackground='#1065BF')
     curseur1.place(x=410, y=17, anchor=NW)
     curseur1.set(80)
     # les boutons
