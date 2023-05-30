@@ -9,6 +9,7 @@ import communication as com
 from math import atan
 
 
+
 def initialisation_generale():
 
     initialisation_systeme_variable()
@@ -772,17 +773,17 @@ def output_trajectoire():
         if x1 == 'rec':
             y2 = y1 / 100
             z2 = 100 * z1
-            out.append((x2, y2, z2))
+            out.append([x2, y2, z2])
         if x1 == 'arc':
             y2 = y1 / 100
             z2 = z1
-            out.append((x2, y2, z2, vitesse))
+            out.append([x2, y2, z2, vitesse])
         if x1 == 'rot':
             y2 = y1
             z2 = z1 * 100
-            out.append((x2, y2, z2))
+            out.append([x2, y2, z2])
         if x1=='back':
-            out.append(("BACK"))
+            out.append(["BACK"])
     return out
 
 def output_live():
