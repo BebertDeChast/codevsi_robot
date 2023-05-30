@@ -30,6 +30,11 @@ def initialisation_systeme_variable():
     global vitesse
     global Stop
     global lissage
+    global Pilotage_live
+    global T_live_s
+    global T_live_ms
+    T_live_ms=200
+    T_live_s=T_live_ms/1000
     zoom = 1
     lissage=True
     liste_des_mouvements = []
@@ -41,6 +46,7 @@ def initialisation_systeme_variable():
     up = False
     vitesse = 0
     Stop = False
+    Pilotage_live=False
 
 
 def initialisation_systeme_mise_en_page():
@@ -171,7 +177,7 @@ def initialisation_systeme_mise_en_page():
     bt_START_LIVE = Button(ecran, text='PILOTAGE LIVE', fg="white", bg="darkolivegreen", command=lambda: start_live())
     bt_START_LIVE.config(height=4, width=27)
     bt_START_LIVE.place(x=601, y=375, anchor=SW)
-    bt_STOP_LIVE = Button(ecran, text='STOP', fg="white", bg="red", command=lambda: stop_live())
+    bt_STOP_LIVE = Button(ecran, text='STOP LIVE', fg="white", bg="red", command=lambda: stop_live())
     bt_STOP_LIVE.config(height=4, width=55)
     bt_START_LISS = Button(ecran, text='Lissage trajectoire activé', bg="yellow", command=lambda: stop_liss())
     bt_START_LISS.config(height=3, width=30)
@@ -345,12 +351,17 @@ def stop():
 
 
 def start_live():
+    global Pilotage_live
+    Pilotage_live=True
+    output_live()
     bt_START.place_forget()
     bt_START_LIVE.place_forget()
-    bt_STOP.place(x=403, y=375, anchor=SW)
+    bt_STOP_LIVE.place(x=403, y=375, anchor=SW)
 
 
 def stop_live():
+    global Pilotage_live
+    Pilotage_live=False
     bt_START.place(x=401, y=375, anchor=SW)
     bt_STOP_LIVE.place_forget()
     bt_START_LIVE.place(x=600, y=375, anchor=SW)
@@ -687,9 +698,10 @@ def etat():
     global nb_down
     if nb_left == 0 and nb_right == 0 and nb_up == 0 and nb_down == 0:
         vitesse = curseur1.get()
-    head_adequation()
-    head_mouvement()
-    reglage_zoom()
+    if not Pilotage_live:
+        head_adequation()
+        head_mouvement()
+        reglage_zoom()
     fenetre.after(50, etat)
 
 
@@ -770,9 +782,38 @@ def output_trajectoire():
             out.append((x2, y2, z2))
         if x1=='back':
             out.append(("BACK"))
-
     return out
 
+def output_live():
+    global T_live_ms
+    if valid_up():
+        if valid_left():
+            ext_output_live(0.5,1)
+        elif valid_right():
+            ext_output_live(1,0.5)
+        else:
+            ext_output_live(1,1)
+    elif valid_down():
+        if valid_left():
+            ext_output_live(-0.5,-1)
+        elif valid_right():
+            ext_output_live(-1,-0.5)
+        else:
+            ext_output_live(-1,-1)
+    elif valid_left():
+        ext_output_live(1,-1)
+    elif valid_right():
+        ext_output_live(-1,1)
+    if Pilotage_live:
+        fenetre.after(T_live_ms, output_live)
+
+def ext_output_live(v1,v2):
+    global T_live_s
+    global vitesse
+    vmax=traj.vmax *vitesse/100
+    r=traj.r
+    list_v=[[[vmax*v1/r,vmax*v2/r],T_live_s]]
+    com.send_instruction(list_v)
 
 def main():
     initialisation_generale()
