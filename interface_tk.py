@@ -233,7 +233,7 @@ def valid_rot():
             vitesse = 1
         angle = float(value_angle_rot.get())
         pos = position_curseur()
-        liste.insert(pos, f"Rotation {angle} deg à {vitesse}deg/s à {rot_sens}")
+        liste.insert(pos, f"Rotation {angle} deg à {vitesse*1.9}deg/s à {rot_sens}")
 
         if rot_sens == "gauche":
             angle = -angle
@@ -492,13 +492,13 @@ def remise_a_zero_pointeur():
 def creer_rec(l):
     if l == 0:
         return None
-    vitesse = curseur1.get()
+    vitesse = curseur1.get()/100
     liste_des_mouvements.append(('rec', l, vitesse))
     direction = 'avant'
     if l < 0:
         l = -l
         direction = 'arrière'
-    liste.insert(END, f"Trajectoire rectiligne {l} cm à {vitesse/100} m/s en {direction}")
+    liste.insert(END, f"Trajectoire rectiligne {l} cm à {vitesse} m/s en {direction}")
     remise_a_zero_pointeur()
 
 
@@ -519,15 +519,16 @@ def creer_arc(rayon, angle):
 
 
 def creer_rotation(angle):
-    vitesse = curseur1.get() 
+    vitesse = curseur1.get() /100
     if angle == 0:
         return None
     sens = 'droite'
+
     liste_des_mouvements.append(('rot', angle, vitesse))
     if angle < 0:
         angle = -angle
         sens = 'gauche'
-    liste.insert(END, f"Rotation {angle} rad à {vitesse/100} deg/s à {sens}")
+    liste.insert(END, f"Rotation {angle} rad à {vitesse*190} deg/s à {sens}")
     remise_a_zero_pointeur()
 
 
