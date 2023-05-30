@@ -123,34 +123,50 @@ def gen_trap(a, v, l):
         T = 0
     nbptpente = int(tau // T0)
     nbptplateau = int((T - tau) // T0)
-    return ([a * l / abs(l) for k in range(nbptpente)] + [0 for k in range(nbptplateau)] + [-a * l / abs(l) for k in range(nbptpente)], nbptpente, nbptplateau)
+    return ([0 for k in range(nbptpente)] + [0 for k in range(nbptplateau)] + [0 for k in range(nbptpente)], nbptpente, nbptplateau)
 
 
 def read_LIN(l, prc):
     al, nbptpente, nbptplateau = gen_trap(amax, vmax * prc, l)
-    ar = al
-    return ([al, ar, [k * T0 for k in range(len(al))]], nbptpente, nbptplateau)
+    if l >= 0 :
+        vr = integ(al,vmax * prc,T0)
+        vl = integ(al,vmax * prc,T0)
+    else :
+        vr = integ(al,-vmax * prc,T0)
+        vl = integ(al,-vmax * prc,T0)
+    return ([vl, vr, [k * T0 for k in range(len(al))]], nbptpente, nbptplateau)
 
 
 def read_ROT(a, prc):
     a = a * (np.pi / 180)
     al, nbptpente, nbptplateau = gen_trap(amax, vmax * prc, a * L / 2)
     ar = [-k for k in al]
-    return ([al, ar, [k * T0 for k in range(len(al))]], nbptpente, nbptplateau)
+    if a > 0 :
+        vr = integ(ar,-vmax * prc,T0)
+        vl = integ(al,vmax * prc,T0)
+    else :
+        vr = integ(ar,vmax * prc,T0)
+        vl = integ(al,-vmax * prc,T0)
+    return ([vl, vr, [k * T0 for k in range(len(al))]], nbptpente, nbptplateau)
 
 
 def read_CIR(r, a, prc):
     a = a * (np.pi / 180)
     if r >= 0:
         al, nbptpente, nbptplateau = gen_trap(amax, vmax * prc, a * (abs(r) + L / 2))
-        ar = [k * (abs(r) - L / 2) / (abs(r) + L / 2) for k in al]
-    else:
+        if a>= 0:
+            vl = integ(al,vmax * prc,T0) 
+        else :
+            vl = integ(al,-vmax * prc,T0)
+        vr = [k * (abs(r) - L / 2) / (abs(r) + L / 2) for k in vl]
+    else :
         ar, nbptpente, nbptplateau = gen_trap(amax, vmax * prc, a * (abs(r) + L / 2))
-        al = [k * (abs(r) - L / 2) / (abs(r) + L / 2) for k in ar]
-    if a != 0 and max(al) > amax or max(ar) > amax:
-        print("L'accélération d'une des roues dépasse l'accélération maximale nominale")
-        return ()
-    return ([al, ar, [k * T0 for k in range(len(al))]], nbptpente, nbptplateau)
+        if a>= 0:
+            vr = integ(ar,vmax * prc,T0)
+        else :
+            vr = integ(ar,-vmax * prc,T0)
+        vl = [k * (abs(r) - L / 2) / (abs(r) + L / 2) for k in vr]
+    return ([vl, vr, [k * T0 for k in range(len(vl))]], nbptpente, nbptplateau)
 
 
 def read_BACK(x, y, xr, yr, xl, yl):
@@ -161,9 +177,9 @@ def read_BACK(x, y, xr, yr, xl, yl):
     anr = np.arctan2(ver[1], ver[0])
     a = np.pi - (ant - anr)
     l = np.linalg.norm(vet)
-    ar = read_ROT(a * 180 / np.pi, 1)[0][1] + read_LIN(l, 1)[0][1]
-    al = read_ROT(a * 180 / np.pi, 1)[0][0] + read_LIN(l, 1)[0][0]
-    return (al, ar, [k * T0 for k in range(len(al))])
+    vr = read_ROT(a * 180 / np.pi, 1)[0][1] + read_LIN(l, 1)[0][1]
+    vl = read_ROT(a * 180 / np.pi, 1)[0][0] + read_LIN(l, 1)[0][0]
+    return (vl, vr, [k * T0 for k in range(len(al))])
 
 
 def overlap(A, B, p):
@@ -207,7 +223,7 @@ def chaine(A, lissage):
     if lissage:
         lis_chem(A)
         print("Chemin éffectué : ", A)
-    al, ar = [], []
+    vl, vr = [], []
     nbptpente_, nbptplateau_ = 0, 0
     for i in A:
         if i[0] == 'LIN':
@@ -217,30 +233,28 @@ def chaine(A, lissage):
         if i[0] == 'CIR':
             s, nbptpente, nbptplateau = read_CIR(i[1], i[2], i[3])
         if i[0] == 'BACK':
-            t = [k * T0 for k in range(len(ar))]
-            mvt = mvt_habot(integ(ar, 0, T0), integ(al, 0, T0), ar, al, t, False)
+            t = [k * T0 for k in range(len(vr))]
+            mvt = mvt_habot(integ(vr, 0, T0), integ(vl, 0, T0), vr, vl, t, False)
             s = read_BACK(G0[0], G0[1], mvt[0][-1], mvt[1][-1], mvt[2][-1], mvt[3][-1])
         sl = [k for k in s[0]]
         sr = [k for k in s[1]]
         if lissage:
-            overlap(al, sl, min(nbptpente, nbptpente_))
-            overlap(ar, sr, min(nbptpente, nbptpente_))
+            overlap(vl, sl, min(nbptpente, nbptpente_))
+            overlap(vr, sr, min(nbptpente, nbptpente_))
         nbptpente_ = nbptpente
         nbptplateau_ = nbptplateau
-        al.extend(sl)
-        ar.extend(sr)
+        vl.extend(sl)
+        vr.extend(sr)
     t = [0]
-    for i in range(len(ar) - 1):
+    for i in range(len(vr) - 1):
         t.append(t[-1] + T0)
-    return (al, ar, t)
+    return (vl, vr, t)
 
 
 def do(B, real, lissage):
     M = [[k for k in l] for l in B]
-    al, ar, t = chaine(M, lissage)
-    vl = integ(al, 0, T0)
-    vr = integ(ar, 0, T0)
-    xr, yr, xl, yl, t = mvt_habot(vr, vl, al, ar, t, real)
+    vl, vr, t = chaine(M, lissage)
+    xr, yr, xl, yl, t = mvt_habot(vr, vl, vl, vr, t, real)
     aff(xr, yr, xl, yl)
 
 # return [((vg,vr),t)]
@@ -254,22 +268,21 @@ def Pakstelle_to_Flobert(vg, vd):
         if rep[-1][0][0] == vg[i] and rep[-1][0][1] == vd[i]:
             rep[-1][1] += dt
         else:
-            rep.append([[vg[i]/r, vd[i]/r], dt])
+            rep.append([[vg[i], vd[i]], dt])
+    for i in range(len(rep)):
+        rep[i][0][0]/=r
+        rep[i][0][1]/=r
     return rep
 
 # Euler (f_, vr[0], ar[0], t, vr, (J*R/KT*KE), (J*L_/KT*KE), 0)
-
 
 def get_trajectoire(instruction, lissage=False):
     """Format of input [[LIN|ROT|CIR|BACK, param1, param2, param3], ...]
     return [[[vg, vd], dt], ...]
     """
-    al, ar, t = chaine(instruction, lissage)
-    vl = integ(al, 0, T0)
-    vr = integ(ar, 0, T0)
+    vl, vr, t = chaine(instruction, lissage)
     result = Pakstelle_to_Flobert(vl, vr)
-    result.append([[0, 0], T0])  # Stop
+    # result.append([[0, 0], T0])  # Stop
     return result
 
-
-r = get_trajectoire([["LIN", -5, 1]])
+print(get_trajectoire([["LIN",1,1],["ROT",90,1],["CIR", 1, -90,1]], False))
