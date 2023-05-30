@@ -6,7 +6,7 @@ com_port = None
 debit = 9600
 
 
-def detect_arduino(debug=False):
+def detect_arduino(debug=True):
     '''Detect arduino function\n
     This function will detect the arduino and return the port
     '''
@@ -106,10 +106,10 @@ def init():
     global arduino
     com_port = detect_arduino()
     if com_port is None:
-        print("No device found")
-        exit()
+        com_port = "COM10"
+        # exit()
     try:
-        arduino = serial.Serial(port=com_port, baudrate=debit, timeout=2)
+        arduino = serial.Serial(port=com_port, baudrate=debit, timeout=10)
     except serial.SerialException:
         print(f"Arduino not found on port: {com_port}")
         # exit()

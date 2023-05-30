@@ -14,6 +14,7 @@ def print_menu():
     print("3. Test mode")
     print("4. Settings")
     print("5. Listening mode")
+    print("6. Test puissance")
 
 
 def main():
@@ -51,6 +52,10 @@ def main():
             print("--------------------------------------------------")
             print("Listening mode")
             test_mode.listening_mode()
+        elif choice == 6:
+            print("--------------------------------------------------")
+            print("Test puissance")
+            test_mode.test_puissance()
         else:
             print("Invalid input")
 

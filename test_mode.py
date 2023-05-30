@@ -35,3 +35,17 @@ def listening_mode():
         msg = communication.read(communication.arduino)
         print(time.ctime(time.time()))
         print(msg)
+
+def test_puissance():
+    communication.init()
+    print("Starting complete")
+    print("Reading...")
+    t0 = time.time()
+    t = t0
+    data = open("log.txt", "a")
+    data.write("# M0/M1/t\n")
+    while True:
+        msg = communication.read(communication.arduino)
+        print(time.ctime(time.time()))
+        print(msg)
+        data.write(msg)
