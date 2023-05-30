@@ -285,4 +285,4 @@ def get_trajectoire(instruction, lissage=False):
     # result.append([[0, 0], T0])  # Stop
     return result
 
-print(get_trajectoire([["LIN",1,1],["ROT",90,1],["CIR", 1, -90,1]], False))
+# print(get_trajectoire([["LIN",1,1],["ROT",90,1],["CIR", 1, -90,1]], False))
