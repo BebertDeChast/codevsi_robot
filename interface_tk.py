@@ -232,7 +232,7 @@ def valid_rot():
             vitesse = 1
         angle = float(value_angle_rot.get())
         pos = position_curseur()
-        liste.insert(pos, f"Rotation {angle} rad à {vitesse}degre/s à {rot_sens}")
+        liste.insert(pos, f"Rotation {angle} deg à {vitesse}deg/s à {rot_sens}")
 
         if rot_sens == "gauche":
             angle = -angle
@@ -272,7 +272,7 @@ def valid_arc():
     global value_rayon_arc
     if isNumeric(value_angle_arc.get()) and isNumeric(value_rayon_arc.get()):
         pos = position_curseur()
-        liste.insert(pos, f"Arc de cercle de {value_angle_arc.get()} rad de rayon {value_rayon_arc.get()} cm à {arc_sens}")
+        liste.insert(pos, f"Arc de cercle de {value_angle_arc.get()} deg de rayon {value_rayon_arc.get()} cm à {arc_sens}")
         angle = float(f"{value_angle_arc.get()}")
         rayon = float(f"{value_rayon_arc.get()}")
         rayon_ = rayon
@@ -491,13 +491,13 @@ def remise_a_zero_pointeur():
 def creer_rec(l):
     if l == 0:
         return None
-    vitesse = curseur1.get() / 100
+    vitesse = curseur1.get()
     liste_des_mouvements.append(('rec', l, vitesse))
     direction = 'avant'
     if l < 0:
         l = -l
         direction = 'arrière'
-    liste.insert(END, f"Trajectoire rectiligne {l} cm à {vitesse} m/s en {direction}")
+    liste.insert(END, f"Trajectoire rectiligne {l} cm à {vitesse/100} m/s en {direction}")
     remise_a_zero_pointeur()
 
 
@@ -513,12 +513,12 @@ def creer_arc(rayon, angle):
     if angle < 0:
         angle = -angle
         direction = 'arrière'
-    liste.insert(END, f"Arc de cercle de {angle} degre de rayon {rayon} cm à {sens} en {direction}")
+    liste.insert(END, f"Arc de cercle de {angle} deg de rayon {rayon} cm à {sens} en {direction}")
     remise_a_zero_pointeur()
 
 
 def creer_rotation(angle):
-    vitesse = curseur1.get() / 100
+    vitesse = curseur1.get() 
     if angle == 0:
         return None
     sens = 'droite'
@@ -526,7 +526,7 @@ def creer_rotation(angle):
     if angle < 0:
         angle = -angle
         sens = 'gauche'
-    liste.insert(END, f"Rotation {angle} rad à 1 degre/s à {sens}")
+    liste.insert(END, f"Rotation {angle} rad à {vitesse/100} deg/s à {sens}")
     remise_a_zero_pointeur()
 
 
@@ -763,6 +763,7 @@ def mise_a_jour_turtle():
 
 
 def output_trajectoire():
+    global vitesse
     out = []
     traduction = {'rec': 'LIN', 'arc': 'CIR', 'rot': 'ROT','back':'back'}
     for k in liste_des_mouvements:
@@ -771,17 +772,17 @@ def output_trajectoire():
         if x1 == 'rec':
             y2 = y1 / 100
             z2 = 100 * z1
-            out.append([x2, y2, z2])
+            out.append((x2, y2, z2))
         if x1 == 'arc':
             y2 = y1 / 100
             z2 = z1
-            out.append([x2, y2, z2, 100])
+            out.append((x2, y2, z2, vitesse))
         if x1 == 'rot':
             y2 = y1
             z2 = z1 * 100
-            out.append([x2, y2, z2])
+            out.append((x2, y2, z2))
         if x1=='back':
-            out.append(["BACK"])
+            out.append(("BACK"))
     return out
 
 def output_live():
@@ -801,9 +802,9 @@ def output_live():
         else:
             ext_output_live(-1,-1)
     elif valid_left():
-        ext_output_live(1,-1)
-    elif valid_right():
         ext_output_live(-1,1)
+    elif valid_right():
+        ext_output_live(1,-1)
     if Pilotage_live:
         fenetre.after(T_live_ms, output_live)
 
