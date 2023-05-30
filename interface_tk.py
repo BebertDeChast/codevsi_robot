@@ -107,11 +107,11 @@ def initialisation_systeme_mise_en_page():
     value_longueur_rec.set("")
     value_vitesse_rec = StringVar()
     value_vitesse_rec.set("")
-    long_rec = Label(ecran, text="longueur", bg="grey", width=17)
+    long_rec = Label(ecran, text="longueur (cm)", bg="grey", width=17)
     long_rec.place(x=404, y=500)
     entree_long_rec = Entry(ecran, textvariable=value_longueur_rec, width=20)
     entree_long_rec.place(x=404, y=525)
-    vit_rec = Label(ecran, text="vitesse", bg="grey", width=17)
+    vit_rec = Label(ecran, text="vitesse (m/s)", bg="grey", width=17)
     vit_rec.place(x=404, y=550)
     entree_vit_rec = Entry(ecran, textvariable=value_vitesse_rec, width=20)
     entree_vit_rec.place(x=404, y=575)
@@ -122,11 +122,11 @@ def initialisation_systeme_mise_en_page():
     value_angle_rot.set("")
     value_vitesse_rot = StringVar()
     value_vitesse_rot.set("")
-    angle_rot = Label(ecran, text="angle", bg="grey", width=17)
+    angle_rot = Label(ecran, text="angle (deg)", bg="grey", width=17)
     angle_rot.place(x=537, y=500)
     entree_angle_rot = Entry(ecran, textvariable=value_angle_rot, width=20)
     entree_angle_rot.place(x=537, y=525)
-    vit_rec = Label(ecran, text="vitesse", bg="grey", width=17)
+    vit_rec = Label(ecran, text="vitesse roues (m/s)", bg="grey", width=17)
     vit_rec.place(x=537, y=550)
     entree_vit_rot = Entry(ecran, textvariable=value_vitesse_rot, width=20)
     entree_vit_rot.place(x=537, y=575)
@@ -139,11 +139,11 @@ def initialisation_systeme_mise_en_page():
     value_rayon_arc.set("")
     entree_angle_arc = Entry(ecran, textvariable=value_angle_arc, width=20)
     entree_angle_arc.place(x=670, y=525)
-    rayon_arc = Label(ecran, text="rayon", bg="grey", width=17)
+    rayon_arc = Label(ecran, text="rayon (cm)", bg="grey", width=17)
     rayon_arc.place(x=670, y=550)
     entree_rayon_arc = Entry(ecran, textvariable=value_rayon_arc, width=20)
     entree_rayon_arc.place(x=670, y=575)
-    angle_arc = Label(ecran, text="angle", bg="grey", width=17)
+    angle_arc = Label(ecran, text="angle (deg)", bg="grey", width=17)
     angle_arc.place(x=670, y=500)
     # affichage curseur
     curseur1 = Scale(ecran, length=254, from_=100, to=0, tickinterval=100, sliderrelief='flat', highlightthickness=0, background='whitesmoke', troughcolor='#73B5FA', activebackground='#1065BF')
@@ -188,7 +188,7 @@ def initialisation_systeme_mise_en_page():
     bt_double.place(x=10, y=504, anchor=SW)
     bt_STOP_LISS = Button(ecran, text='Lissage trajectoire désactivé', bg="yellow", command=lambda: start_liss())
     bt_STOP_LISS.config(height=3, width=30)
-    bt_STOP = Button(ecran, text='STOP', fg="white", bg="red", command=lambda: stop())
+    bt_STOP = Button(ecran, text='COMMUNICATION AVEC LE ROBOT EN COURS...', fg="white", bg="darkolivegreen")
     bt_STOP.config(height=4, width=55)
 
     bt_Left = Button(ecran, text='Left', fg="white", bg="darkolivegreen", state=NORMAL)
@@ -224,10 +224,11 @@ def position_curseur():
 
 
 def valid_rot():
+    vitesse = curseur1.get() /100
     global value_angle_rot
     global value_vitesse_rot
     if isNumeric(value_angle_rot.get()):
-        if isNumeric(value_vitesse_rot.get()):
+        if isNumeric(value_vitesse_rot.get()) and float(value_vitesse_rot.get())<=1 and float(value_vitesse_rot.get())>0:
             vitesse = float(value_vitesse_rot.get())
         else:
             vitesse = 1
@@ -243,18 +244,17 @@ def valid_rot():
         else:
             liste_des_mouvements.insert(pos, ('rot', angle, vitesse))
             mise_a_jour_turtle()
-        (value_angle_rot).set("")
-        (value_vitesse_rot).set("")
+    (value_angle_rot).set("")
+    (value_vitesse_rot).set("")
 
 
 def valid_rec():
+    vitesse = curseur1.get() /100
     global value_longueur_rec
     global value_vitesse_rec
-    if isNumeric(value_longueur_rec.get()):
-        if isNumeric(value_vitesse_rec.get()):
+    if isNumeric(value_longueur_rec.get()) :
+        if isNumeric(value_vitesse_rec.get())and float(value_vitesse_rec.get())<=1 and float(value_vitesse_rec.get())>0:
             vitesse = float(value_vitesse_rec.get())
-        else:
-            vitesse = 1
         pos = position_curseur()
         liste.insert(pos, f"Trajectoire rectiligne {value_longueur_rec.get()} cm à {vitesse}m/s")
 
@@ -264,8 +264,8 @@ def valid_rec():
         else:
             liste_des_mouvements.insert(pos, ('rec', float(value_longueur_rec.get()), vitesse))
             mise_a_jour_turtle()
-        (value_longueur_rec).set("")
-        (value_vitesse_rec).set("")
+    (value_longueur_rec).set("")
+    (value_vitesse_rec).set("")
 
 
 def valid_arc():
@@ -286,8 +286,8 @@ def valid_arc():
         else:
             liste_des_mouvements.insert(pos, ( rayon_, angle,vitesse))
             mise_a_jour_turtle()
-        (value_angle_arc).set("")
-        (value_rayon_arc).set("")
+    (value_angle_arc).set("")
+    (value_rayon_arc).set("")
 
 
 def arc_gauche():
@@ -331,13 +331,15 @@ def double_tr():
     
 def start():
     global lissage
-    changebt()
     instr = output_trajectoire()
     print("Liste des instructions : ")
     print(instr)
     if instr != []:
+        fenetre.after(3000, stop)
+        changebt()
         list_v = traj.get_trajectoire(instr,lissage=lissage)
         com.send_instruction(list_v)
+        
 
 
 def changebt():
@@ -499,7 +501,7 @@ def creer_rec(l):
     if l < 0:
         l = -l
         direction = 'arrière'
-    liste.insert(END, f"Trajectoire rectiligne {l} cm à {vitesse} m/s en {direction}")
+    liste.insert(END, f"Trajectoire rectiligne {int(l)} cm à {vitesse} m/s en {direction}")
     remise_a_zero_pointeur()
 
 
@@ -516,7 +518,7 @@ def creer_arc(rayon, angle):
     if angle < 0:
         angle = -angle
         direction = 'arrière'
-    liste.insert(END, f"Arc de cercle de {angle} deg de rayon {rayon} cm à {sens} en {direction}")
+    liste.insert(END, f"Arc de cercle de {int(angle)} deg de rayon {int(rayon)} cm à {sens} en {direction}")
     remise_a_zero_pointeur()
 
 
@@ -530,7 +532,7 @@ def creer_rotation(angle):
     if angle < 0:
         angle = -angle
         sens = 'gauche'
-    liste.insert(END, f"Rotation {angle} rad à {vitesse*190} deg/s à {sens}")
+    liste.insert(END, f"Rotation {int(angle)} rad à {int(vitesse*190)} deg/s à {sens}")
     remise_a_zero_pointeur()
 
 
