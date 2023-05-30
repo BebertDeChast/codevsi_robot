@@ -20,9 +20,9 @@ data_splitted[:, 1] = -data_splitted[:, 1]
 stop_time = 338  # Time at which the robot stops in the log file #TODO find a way to detect it automatically
 data = np.copy(data_splitted[:stop_time, :])
 mean_array = np.array([[0, 0] for i in range(len(data))], dtype=float)
-m = 50
+m = 20
 # Makes the mean of the last m values to smooth the data
-for i in range(m):
+for i in range(1,m):
     mean_array[i, 0] = data[0:i, 0].mean()
     mean_array[i, 1] = data[0:i, 1].mean()
 
@@ -30,24 +30,28 @@ for i in range(m, len(data)):
     mean_array[i, 0] = data[i - m:i, 0].mean()
     mean_array[i, 1] = data[i - m:i, 1].mean()
 
-acc0 = np.diff(mean_array[:, 0])
-acc0 = np.append(acc0, acc0[-1])
-acc1 = np.diff(mean_array[:, 1])
-acc1 = np.append(acc1, acc1[-1])
+print(mean_array)
+acc = np.array([[0, 0] for i in range(len(data))], dtype=float)
 
+# Computes the acceleration
+for i in range(1, len(data)):
+    acc[i, 0] = (mean_array[i, 0] - mean_array[i - 1, 0]) / (data[i, 2] - data[i - 1, 2])*100
+    acc[i, 1] = (mean_array[i, 1] - mean_array[i - 1, 1]) / (data[i, 2] - data[i - 1, 2])*100
+
+print(acc)
 
 print("M0 max speed(rad/s): ", np.mean(data[:, 0]))
 print("M1 max speed(rad/s): ", np.mean(data[:, 1]))
-print("M0 max acc(rad/s^2): ", np.max(acc0[1:]))
-print("M1 max acc(rad/s^2): ", np.max(acc1[1:]))
+print("M0 max acc(rad/s^2): ", np.max(acc[:, 0]))
+print("M1 max acc(rad/s^2): ", np.max(acc[:, 1]))
 
 plt.plot(data[:, 2], mean_array[:, 0], label=f"M0_speed_smoothened_on_{m}")
 plt.plot(data[:, 2], mean_array[:, 1], label=f"M1_speed_smoothened_on_{m}")
 # plt.plot(data[:, 2], data[:, 0], label="M0_origin", alpha=0.5)
 # plt.plot(data[:, 2], data[:, 1], label="M1_origin", alpha=0.5)
-plt.plot(data[:, 2], acc0, label="M0_acceleration")
-plt.plot(data[:, 2], acc1, label="M1_acceleration")
+plt.plot(data[:, 2], acc[:,0], label="M0_acceleration")
+plt.plot(data[:, 2], acc[:,1], label="M1_acceleration")
 plt.xlabel("Time(ms)")
 plt.ylabel("Rad/s or Rad/s^2")
 plt.legend()
-# plt.show()
+plt.show()
