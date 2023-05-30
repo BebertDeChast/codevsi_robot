@@ -269,6 +269,7 @@ def valid_rec():
 
 
 def valid_arc():
+    vitesse = curseur1.get() /100
     global value_angle_arc
     global value_rayon_arc
     if isNumeric(value_angle_arc.get()) and isNumeric(value_rayon_arc.get()):
@@ -281,9 +282,9 @@ def valid_arc():
             rayon_ = -rayon
         if pos == END:
             dessine_arc_express(angle, rayon_)
-            liste_des_mouvements.append(('arc', rayon_, angle))
+            liste_des_mouvements.append(( rayon_, angle,vitesse))
         else:
-            liste_des_mouvements.insert(pos, ('arc', rayon_, angle))
+            liste_des_mouvements.insert(pos, ( rayon_, angle,vitesse))
             mise_a_jour_turtle()
         (value_angle_arc).set("")
         (value_rayon_arc).set("")
@@ -503,11 +504,12 @@ def creer_rec(l):
 
 
 def creer_arc(rayon, angle):
+    vitesse = curseur1.get() /100
     if angle == 0:
         return None
     sens = 'droite'
     direction = 'avant'
-    liste_des_mouvements.append(('arc', rayon, angle))
+    liste_des_mouvements.append((rayon, angle, vitesse))
     if rayon < 0:
         rayon = -rayon
         sens = 'gauche'
@@ -756,35 +758,38 @@ def mise_a_jour_turtle():
             dessine_ligne(y)
         elif x == 'rot':
             draw.right(y)
-        elif x == 'arc':
-            rayon = y
-            angle = z
+        elif isNumeric(x):
+            rayon = x
+            angle = y
             dessine_arc_express(angle, rayon)
         elif x=='back':
             dessine_back()
 
 
 def output_trajectoire():
-    global vitesse
+
     out = []
-    traduction = {'rec': 'LIN', 'arc': 'CIR', 'rot': 'ROT','back':'back'}
+    traduction = {'rec': 'LIN', 'rot': 'ROT','back':'back'}
     for k in liste_des_mouvements:
         x1, y1, z1 = k
-        x2 = traduction[x1]
-        if x1 == 'rec':
-            y2 = y1 / 100
-            z2 = 100 * z1
-            out.append([x2, y2, z2])
-        if x1 == 'arc':
-            y2 = y1 / 100
-            z2 = z1
-            out.append([x2, y2, z2, vitesse])
-        if x1 == 'rot':
+        if isNumeric(x1):
+            x2 = x1 / 100
             y2 = y1
-            z2 = z1 * 100
-            out.append([x2, y2, z2])
-        if x1=='back':
-            out.append(["BACK"])
+            z2=100*z1
+            out.append(['CIR', x2, y2, z2])
+        else:
+            x2 = traduction[x1]
+            if x1 == 'rec':
+                y2 = y1 / 100
+                z2 = 100 * z1
+                out.append([x2, y2, z2])
+
+            if x1 == 'rot':
+                y2 = y1
+                z2 = z1 * 100
+                out.append([x2, y2, z2])
+            if x1=='back':
+                out.append(["BACK"])
     return out
 
 def output_live():
