@@ -15,7 +15,7 @@ def detect_arduino(debug=True):
         for port in ports:
             print(port.description)
     for port in ports:
-        if "Arduino" in port.description:
+        if "Arduino" in port.description:  # ! not working
             print("Arduino found on port: " + port.device)
             return port.device
         if "USB Serial" in port.description:
@@ -54,8 +54,8 @@ def create_string(intruction: list) -> str:
     # print(intruction)
     SG = int(intruction[0][0] > 0)
     SD = int(intruction[0][1] > 0)
-    vd = int(abs(intruction[0][0])*100)
-    vg = int(abs(intruction[0][1])*100)
+    vd = int(abs(intruction[0][0]) * 100)
+    vg = int(abs(intruction[0][1]) * 100)
     t = int(intruction[1] * 1000)
     return f"/{SD}/{vd}/{SG}/{vg}/{t}"
 
