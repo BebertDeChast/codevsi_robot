@@ -15,6 +15,7 @@ def print_menu():
     print("4. Settings")
     print("5. Listening mode")
     print("6. Test puissance")
+    print("7. Test PID")
 
 
 def main():
@@ -56,6 +57,10 @@ def main():
             print("--------------------------------------------------")
             print("Test puissance")
             test_mode.test_puissance()
+        elif choice == 7:
+            print("--------------------------------------------------")
+            print("Test pid")
+            test_mode.test_pid()
         else:
             print("Invalid input")
 

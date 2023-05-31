@@ -111,7 +111,7 @@ def init():
     try:
         arduino = serial.Serial(port=com_port, baudrate=debit, timeout=10)
     except serial.SerialException:
-        print(f"Arduino not found on port: {com_port}")
+        print(f"Connection failed: {com_port}")
         # exit()
 
     time.sleep(1)  # wait for the serial connection to initialize

@@ -1,5 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
+from test_mode import test_pid
 
 # This file is used to compute the specs of the robot
 # It uses the log file to compute the median speed and the max acceleration after a full speed run
@@ -8,9 +9,11 @@ import matplotlib.pyplot as plt
 # The file is in the format:
 # M0/M1/t
 
-file = open("log.txt", "r")
+test_pid()
+
+file = open("log1.txt", "r")
 file_rep = file.readlines()
-file_rep = [line.replace("\n", "") for line in file_rep[1:]]
+file_rep = [line.replace("\n", "") for line in file_rep]
 file.close()
 
 data_splitted = [line.split("/") for line in file_rep]
@@ -18,9 +21,10 @@ data_splitted = np.array(data_splitted, dtype=float)
 data_splitted[:, 1] = -data_splitted[:, 1]
 
 stop_time = 338  # Time at which the robot stops in the log file #TODO find a way to detect it automatically
+stop_time = len(data_splitted) # uncomment to cancel the stop_time
 data = np.copy(data_splitted[:stop_time, :])
 mean_array = np.array([[0, 0] for i in range(len(data))], dtype=float)
-m = 20
+m = 1
 # Makes the mean of the last m values to smooth the data
 for i in range(1,m):
     mean_array[i, 0] = data[0:i, 0].mean()
@@ -31,26 +35,28 @@ for i in range(m, len(data)):
     mean_array[i, 1] = data[i - m:i, 1].mean()
 
 print(mean_array)
-acc = np.array([[0, 0] for i in range(len(data))], dtype=float)
+# acc = np.array([[0, 0] for i in range(len(data))], dtype=float)
 
 # Computes the acceleration
-for i in range(1, len(data)):
-    acc[i, 0] = (mean_array[i, 0] - mean_array[i - 1, 0]) / (data[i, 2] - data[i - 1, 2])*100
-    acc[i, 1] = (mean_array[i, 1] - mean_array[i - 1, 1]) / (data[i, 2] - data[i - 1, 2])*100
+# for i in range(1, len(data)):
+#     acc[i, 0] = (mean_array[i, 0] - mean_array[i - 1, 0]) / (data[i, 2] - data[i - 1, 2])*100
+#     acc[i, 1] = (mean_array[i, 1] - mean_array[i - 1, 1]) / (data[i, 2] - data[i - 1, 2])*100
 
-print(acc)
+# print(acc)
 
-print("M0 max speed(rad/s): ", np.mean(data[:, 0]))
-print("M1 max speed(rad/s): ", np.mean(data[:, 1]))
-print("M0 max acc(rad/s^2): ", np.max(acc[:, 0]))
-print("M1 max acc(rad/s^2): ", np.max(acc[:, 1]))
+# print("M0 max speed(rad/s): ", np.mean(data[:, 0]))
+# print("M1 max speed(rad/s): ", np.mean(data[:, 1]))
+# print("M0 max acc(rad/s^2): ", np.max(acc[:, 0]))
+# print("M1 max acc(rad/s^2): ", np.max(acc[:, 1]))
 
-plt.plot(data[:, 2], mean_array[:, 0], label=f"M0_speed_smoothened_on_{m}")
-plt.plot(data[:, 2], mean_array[:, 1], label=f"M1_speed_smoothened_on_{m}")
+# plt.plot(data[:, 2], mean_array[:, 0], label=f"M0_speed_smoothened_on_{m}")
+plt.plot(data[:, 2], data[:, 3], label="M0_integrateur")
+plt.plot(data[:, 2], data[:, 4], label="M0_error")
+# plt.plot(data[:, 2], mean_array[:, 1], label=f"M1_speed_smoothened_on_{m}")
 # plt.plot(data[:, 2], data[:, 0], label="M0_origin", alpha=0.5)
 # plt.plot(data[:, 2], data[:, 1], label="M1_origin", alpha=0.5)
-plt.plot(data[:, 2], acc[:,0], label="M0_acceleration")
-plt.plot(data[:, 2], acc[:,1], label="M1_acceleration")
+# plt.plot(data[:, 2], acc[:,0], label="M0_acceleration")
+# plt.plot(data[:, 2], acc[:,1], label="M1_acceleration")
 plt.xlabel("Time(ms)")
 plt.ylabel("Rad/s or Rad/s^2")
 plt.legend()

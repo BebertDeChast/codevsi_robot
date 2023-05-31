@@ -36,6 +36,7 @@ def listening_mode():
         print(time.ctime(time.time()))
         print(msg)
 
+
 def test_puissance():
     communication.init()
     print("Starting complete")
@@ -49,3 +50,25 @@ def test_puissance():
         print(time.ctime(time.time()))
         print(msg)
         data.write(msg)
+
+
+def test_pid():
+    communication.init()
+    print("Starting complete")
+    t0 = time.time()
+    t = t0
+    file = open("log1.txt", "w")
+    # file.write("# M0/M1/t\n")
+    data = input("Enter instruction (leave empty to exit): ")
+    communication.write(data, communication.arduino)
+    print("Instruction sent")
+    print("Reading...")
+    while True:
+        msg = communication.read(communication.arduino)
+        if msg == None:
+            break
+        print(time.ctime(time.time()))
+        print(msg)
+        file.write(msg)
+    file.close()
+    print("Done")
