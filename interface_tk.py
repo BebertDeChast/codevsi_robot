@@ -350,7 +350,7 @@ def compte_goutte():
     list_v = traj.get_trajectoire([pas],lissage=lissage)
     com.send_instruction(list_v)
     if instr!=[]:
-        fenetre.after(5000, compte_goutte)
+        fenetre.after(4000, compte_goutte)
     
 
 
