@@ -260,7 +260,7 @@ def valid_rec():
 
         if pos == END:
             dessine_ligne(float(value_longueur_rec.get()))
-            liste_des_mouvements.append(('rec', value_longueur_rec.get(), vitesse))
+            liste_des_mouvements.append(('rec', float(value_longueur_rec.get()), vitesse))
         else:
             liste_des_mouvements.insert(pos, ('rec', float(value_longueur_rec.get()), vitesse))
             mise_a_jour_turtle()
