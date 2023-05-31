@@ -109,7 +109,7 @@ def init():
         com_port = "COM10"
         # exit()
     try:
-        arduino = serial.Serial(port=com_port, baudrate=debit, timeout=10)
+        arduino = serial.Serial(port=com_port, baudrate=debit, timeout=2)
     except serial.SerialException:
         print(f"Connection failed: {com_port}")
         # exit()

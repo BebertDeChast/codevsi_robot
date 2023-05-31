@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 from matplotlib.animation import PillowWriter
 T0 = 0.1  # (s) periode de consigne
 amax = 0.5  # (m/s²) accélération maximale nominale des roues (moins une marge)
-vmax = 0.6  # (m/s) vitesse maximale nominale des roues (moins une marge)
+vmax = 2  # (m/s) vitesse maximale nominale des roues (moins une marge)
 r = 0.04  # (m) rayon des roues
 L = 0.3  # (m) largeur du robot
 G0 = (0, 0)  # position initiale du barycentre du habot
