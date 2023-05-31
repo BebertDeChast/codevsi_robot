@@ -35,6 +35,7 @@ def initialisation_systeme_variable():
     global Pilotage_live
     global T_live_s
     global T_live_ms
+    global instr
     T_live_ms=200
     T_live_s=T_live_ms/1000
     zoom = 1
@@ -49,6 +50,7 @@ def initialisation_systeme_variable():
     vitesse = 0
     Stop = False
     Pilotage_live=False
+    instr=[]
 
 
 def initialisation_systeme_mise_en_page():
@@ -231,8 +233,7 @@ def valid_rot():
     if isNumeric(value_angle_rot.get()):
         if isNumeric(value_vitesse_rot.get()) and float(value_vitesse_rot.get())<=1 and float(value_vitesse_rot.get())>0:
             vitesse = float(value_vitesse_rot.get())
-        else:
-            vitesse = 1
+
         angle = float(value_angle_rot.get())
         pos = position_curseur()
         liste.insert(pos, f"Rotation {angle} deg à {vitesse*1.9}deg/s à {rot_sens}")
@@ -332,15 +333,25 @@ def double_tr():
     
 def start():
     global lissage
+    global instr
     instr = output_trajectoire()
     print("Liste des instructions : ")
     print(instr)
     if instr != []:
         fenetre.after(3000, stop)
         changebt()
-        list_v = traj.get_trajectoire(instr,lissage=lissage)
-        com.send_instruction(list_v)
         
+        compte_goutte()
+
+
+def compte_goutte():
+    global instr
+    pas = instr.pop(0)
+    list_v = traj.get_trajectoire([pas],lissage=lissage)
+    com.send_instruction(list_v)
+    if instr!=[]:
+        fenetre.after(5000, compte_goutte)
+    
 
 
 def changebt():
@@ -770,33 +781,33 @@ def mise_a_jour_turtle():
 
 
 def output_trajectoire():
-    global coef_corr
+
     out = []
     traduction = {'rec': 'LIN', 'rot': 'ROT','back':'back'}
     for k in liste_des_mouvements:
         x1, y1, z1 = k
         if isNumeric(x1):
             x2 = x1 / 100
-            y2 = y1*coef_corr
-            z2=100*z1
+            y2 = y1
+            z2=z1
             out.append(['CIR', x2, y2, z2])
         else:
             x2 = traduction[x1]
             if x1 == 'rec':
-                y2 = y1 / 100*coef_corr
-                z2 = 100 * z1
+                print(y1)
+                y2 = y1 / 100
+                z2 = z1
                 out.append([x2, y2, z2])
 
             if x1 == 'rot':
-                y2 = y1*coef_corr
-                z2 = z1 * 100
+                y2 = y1
+                z2 = z1 
                 out.append([x2, y2, z2])
             if x1=='back':
                 out.append(["BACK"])
     return out
 
 def output_live():
-
     global T_live_ms
     if valid_up():
         if valid_left():
@@ -826,8 +837,7 @@ def ext_output_live(v1,v2):
     r=traj.r
     list_v=[[[vmax*v1/r,vmax*v2/r],T_live_s]]
     com.send_instruction(list_v)
-
-
+    
 def main():
     initialisation_generale()
     fenetre.mainloop()
