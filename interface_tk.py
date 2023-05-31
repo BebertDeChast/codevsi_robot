@@ -7,7 +7,7 @@ from turtle import *
 import trajectoire as traj
 import communication as com
 from math import atan
-coef_corr=0.5
+coef_corr=2
 
 
 

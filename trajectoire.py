@@ -2,8 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import PillowWriter
 T0 = 0.1  # (s) periode de consigne
-amax = 0.5  # (m/s²) accélération maximale nominale des roues (moins une marge)
-vmax = 2  # (m/s) vitesse maximale nominale des roues (moins une marge)
+amax = 5  # (m/s²) accélération maximale nominale des roues (moins une marge)
+vmax = 0.35  # (m/s) vitesse maximale nominale des roues (moins une marge)
 r = 0.04  # (m) rayon des roues
 L = 0.3  # (m) largeur du robot
 G0 = (0, 0)  # position initiale du barycentre du habot
@@ -282,7 +282,7 @@ def get_trajectoire(instruction, lissage=False):
     """
     vl, vr, t = chaine(instruction, lissage)
     result = Pakstelle_to_Flobert(vl, vr)
-    # result.append([[0, 0], T0])  # Stop
+    result.append([[0, 0], T0])  # Stop
     return result
 
 # print(get_trajectoire([["LIN",1,1],["ROT",90,1],["CIR", 1, -90,1]], False))
