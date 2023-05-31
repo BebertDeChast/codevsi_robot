@@ -7,6 +7,7 @@ from turtle import *
 import trajectoire as traj
 import communication as com
 from math import atan
+coef_corr=0.5
 
 
 
@@ -769,25 +770,25 @@ def mise_a_jour_turtle():
 
 
 def output_trajectoire():
-
+    global coef_corr
     out = []
     traduction = {'rec': 'LIN', 'rot': 'ROT','back':'back'}
     for k in liste_des_mouvements:
         x1, y1, z1 = k
         if isNumeric(x1):
             x2 = x1 / 100
-            y2 = y1
+            y2 = y1*coef_corr
             z2=100*z1
             out.append(['CIR', x2, y2, z2])
         else:
             x2 = traduction[x1]
             if x1 == 'rec':
-                y2 = y1 / 100
+                y2 = y1 / 100*coef_corr
                 z2 = 100 * z1
                 out.append([x2, y2, z2])
 
             if x1 == 'rot':
-                y2 = y1
+                y2 = y1*coef_corr
                 z2 = z1 * 100
                 out.append([x2, y2, z2])
             if x1=='back':
@@ -795,6 +796,7 @@ def output_trajectoire():
     return out
 
 def output_live():
+
     global T_live_ms
     if valid_up():
         if valid_left():
