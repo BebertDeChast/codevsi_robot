@@ -825,6 +825,7 @@ def ext_output_live(v1,v2):
     list_v=[[[vmax*v1/r,vmax*v2/r],T_live_s]]
     com.send_instruction(list_v)
 
+
 def main():
     initialisation_generale()
     fenetre.mainloop()
