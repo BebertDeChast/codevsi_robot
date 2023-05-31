@@ -51,7 +51,7 @@ def create_string(intruction: list) -> str:
     # raise ValueError("mode must be 'l'(live) or 'r'(remote)")
     if len(intruction) != 2 and len(intruction[0]) != 2:
         raise ValueError("intruction must be a list of a list and a float")
-    # print(intruction)
+    #print(intruction)
     SG = int(intruction[0][0] > 0)
     SD = int(intruction[0][1] > 0)
     vd = int(abs(intruction[0][0]) * 100)
