@@ -809,7 +809,7 @@ def output_trajectoire():
     for k in liste_des_mouvements:
         x1, y1, z1 = k
         if isNumeric(x1):
-            x2 = x1 / 100
+            x2 = -x1 / 100
             y2 = y1
             z2=z1
             out.append(['CIR', x2, y2, z2])
