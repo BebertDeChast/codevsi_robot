@@ -194,16 +194,16 @@ def initialisation_systeme_mise_en_page():
     bt_STOP = Button(ecran, text='COMMUNICATION AVEC LE ROBOT EN COURS...', fg="white", bg="darkolivegreen")
     bt_STOP.config(height=4, width=55)
 
-    bt_Left = Button(ecran, text='Left', fg="white", bg="darkolivegreen", state=NORMAL)
+    bt_Left = Button(ecran, text='Left', fg="white", bg="darkolivegreen", command=lambda: new_left())
     bt_Left.config(width=9, height=4)
     bt_Left.place(x=520, y=250, anchor=SW)
-    bt_Down = Button(ecran, text='Down', fg="white", bg="darkolivegreen")
+    bt_Down = Button(ecran, text='Down', fg="white", bg="darkolivegreen",command=lambda: new_down())
     bt_Down.config(width=9, height=4)
     bt_Down.place(x=610, y=250, anchor=SW)
-    bt_Right = Button(ecran, text='Right', fg="white", bg="darkolivegreen")
+    bt_Right = Button(ecran, text='Right', fg="white", bg="darkolivegreen",command=lambda: new_right())
     bt_Right.config(width=9, height=4)
     bt_Right.place(x=700, y=250, anchor=SW)
-    bt_Up = Button(ecran, text='Up', fg="white", bg="darkolivegreen")
+    bt_Up = Button(ecran, text='Up', fg="white", bg="darkolivegreen",command=lambda: new_up())
     bt_Up.config(width=9, height=4)
     bt_Up.place(x=610, y=165, anchor=SW)
     # configuration cavier
@@ -224,6 +224,28 @@ def position_curseur():
     if len(sel) >= 1:
         return sel[0]
     return END
+
+
+def new_left():
+    vitesse = curseur1.get() /100
+    angle = 90
+    liste.insert(END, f"Rotation {angle} deg à {vitesse*1.9}deg/s à gauche")
+    tourne(90, 'gauche')
+    liste_des_mouvements.append(('rot', -70, vitesse))
+
+def new_right():
+    vitesse = curseur1.get() /100
+    angle = 90
+    liste.insert(END, f"Rotation {angle} deg à {vitesse*1.9}deg/s à droite")
+    tourne(90, 'droite')
+    liste_des_mouvements.append(('rot', 70, vitesse))
+
+def new_up():
+    creer_rec(100)
+    dessine_ligne(100)
+def new_down():
+    creer_rec(-100)
+    dessine_ligne(-100)
 
 
 def valid_rot():
@@ -828,14 +850,14 @@ def output_live():
     elif valid_right():
         ext_output_live(1,-1)
     if Pilotage_live:
-        fenetre.after(T_live_ms, output_live)
+        fenetre.after(3000, output_live)
 
 def ext_output_live(v1,v2):
     global T_live_s
     global vitesse
     vmax=traj.vmax *vitesse/100
     r=traj.r
-    list_v=[[[vmax*v1/r,vmax*v2/r],T_live_s]]
+    list_v=[[[vmax*v1/r,vmax*v2/r],3]]
     com.send_instruction(list_v)
     
 def main():
