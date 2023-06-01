@@ -316,7 +316,7 @@ def valid_arc():
             mise_a_jour_turtle()
     (value_angle_arc).set("")
     (value_rayon_arc).set("")
-     if Pilotage_live:
+    if Pilotage_live:
         lecture()
 
 
@@ -397,6 +397,7 @@ def stop():
 
 
 def start_live():
+    fait_reset()
     global Pilotage_live
     Pilotage_live=True
     output_live()
