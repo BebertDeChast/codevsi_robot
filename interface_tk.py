@@ -270,6 +270,8 @@ def valid_rot():
             mise_a_jour_turtle()
     (value_angle_rot).set("")
     (value_vitesse_rot).set("")
+    if Pilotage_live:
+        lecture()
 
 
 def valid_rec():
@@ -290,6 +292,8 @@ def valid_rec():
             mise_a_jour_turtle()
     (value_longueur_rec).set("")
     (value_vitesse_rec).set("")
+    if Pilotage_live:
+        lecture()
 
 
 def valid_arc():
@@ -312,6 +316,8 @@ def valid_arc():
             mise_a_jour_turtle()
     (value_angle_arc).set("")
     (value_rayon_arc).set("")
+     if Pilotage_live:
+        lecture()
 
 
 def arc_gauche():
@@ -351,9 +357,7 @@ def double_tr():
     mise_a_jour_turtle()
         
         
-    
-    
-def start():
+def lecture():
     global lissage
     global instr
     instr = output_trajectoire()
@@ -361,9 +365,13 @@ def start():
     print(instr)
     if instr != []:
         fenetre.after(3000, stop)
-        changebt()
+        
         
         compte_goutte()
+    
+def start():
+    lecture()
+    changebt()
 
 
 def compte_goutte():
