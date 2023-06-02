@@ -226,27 +226,6 @@ def position_curseur():
     return END
 
 
-def new_left():
-    vitesse = curseur1.get() /100
-    angle = 90
-    liste.insert(END, f"Rotation {angle} deg à {vitesse*1.9}deg/s à gauche")
-    tourne(90, 'gauche')
-    liste_des_mouvements.append(('rot', -70, vitesse))
-
-def new_right():
-    vitesse = curseur1.get() /100
-    angle = 90
-    liste.insert(END, f"Rotation {angle} deg à {vitesse*1.9}deg/s à droite")
-    tourne(90, 'droite')
-    liste_des_mouvements.append(('rot', 70, vitesse))
-
-def new_up():
-    creer_rec(100)
-    dessine_ligne(100)
-def new_down():
-    creer_rec(-100)
-    dessine_ligne(-100)
-
 
 def valid_rot():
     vitesse = curseur1.get() /100
